@@ -33,6 +33,13 @@ named links, each pointing to some other section of the
 document. When the user clicks on a link, the "target"
 card is displayed.
 
+The app, which relies on the Elm `brilliantorg/backpacker-below"`
+package, is quite slim. The `Hypercard` module (360 loc) is the 
+interface between the app code in `Main` (260 loc). It makes use 
+of a small module, `ASTTools` (80 loc) that manipulates
+the AST obtained by parsing a Hypercard source file.
+That's it!
+
 ## Implementation
 
 A Camperdown document has a _prelude_ and a bunch of _sections_:
