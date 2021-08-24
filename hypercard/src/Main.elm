@@ -21,6 +21,8 @@ import File.Select as Select
 import Hypercard as HyperCard exposing (HyperCardMsg(..))
 import Task
 import Url exposing (Url)
+import Markdown
+import Docs
 
 
 main =
@@ -52,6 +54,7 @@ type Msg
     | HyperCard HyperCardMsg
     | ShowSource
     | HideSource
+    | About
     | Dummy String
     | HyperCardRequested
     | HyperCardLoaded File
@@ -61,6 +64,7 @@ type Msg
 type ViewMode
     = ViewWithSource
     | ViewDefault
+    | ViewAbout
 
 
 type alias Flags =
@@ -124,6 +128,8 @@ update msg model =
         HideSource ->
             ( { model | viewMode = ViewDefault }, Cmd.none )
 
+        About -> ({model | viewMode = ViewAbout}, Cmd.none)
+
         Dummy _ ->
             ( { model | viewMode = ViewDefault }, Cmd.none )
 
@@ -175,16 +181,21 @@ mainColumn : Model -> Element Msg
 mainColumn model =
     column mainColumnStyle
         [ column [ spacing 36, width (px 1400), height (px 800) ]
-            [ row [ spacing 12 ] [ showSourceButton model.viewMode, requestFileButton ]
+            [ row [ spacing 12 ] [ showSourceButton model.viewMode, requestFileButton , aboutButton model.viewMode]
             , case model.viewMode of
                 ViewDefault ->
                     viewHyperCard model
 
                 ViewWithSource ->
                     viewWithSourceAndHypercard model
+
+                ViewAbout -> 
+                   viewAbout model
             ]
         ]
 
+viewAbout model = 
+  Markdown.toHtml [] Docs.aboutDoc |> Element.html
 
 viewWithSourceAndHypercard model =
     row [ width fill, spacing 12 ]
@@ -240,6 +251,9 @@ showSourceButton viewMode =
                     }
                 ]
 
+        ViewAbout -> 
+          Element.none
+
 
 requestFileButton : Element Msg
 requestFileButton =
@@ -251,6 +265,22 @@ requestFileButton =
         ]
 
 
+aboutButton : ViewMode -> Element Msg
+aboutButton viewMode =
+  case viewMode of 
+    ViewAbout -> row []
+            [ Input.button buttonStyle
+                { onPress = Just HideSource
+                , label = el [ centerX, centerY ] (text "Hypercard")
+                }
+            ]
+    _ -> 
+        row []
+            [ Input.button buttonStyle
+                { onPress = Just About
+                , label = el [ centerX, centerY ] (text "About")
+                }
+            ]
 
 --
 -- STYLE
