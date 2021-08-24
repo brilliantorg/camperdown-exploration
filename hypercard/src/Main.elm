@@ -173,15 +173,17 @@ bgGray g =
 view : Model -> Browser.Document Msg
 view model =
     { title = "HyperCard Demo"
-    , body = [ Element.layout [ bgGray 0.2 ] (mainColumn model) ]
+    , body = [ Element.layout [ bgGray 0.2, centerX, centerY ] (mainColumn model) ]
     }
 
 
 mainColumn : Model -> Element Msg
 mainColumn model =
     column mainColumnStyle
-        [ column [ spacing 36, width (px 1400), height (px 800) ]
-            [ row [ spacing 12 ] [ showSourceButton model.viewMode, requestFileButton , aboutButton model.viewMode]
+        [ column [ spacing 36, width (px 1400), height (px 800)]
+            [ row [ spacing 12, centerX, centerY ] [ 
+            el [Font.size 24] (text "Camperdown-Hypercard Demo")
+            , showSourceButton model.viewMode, requestFileButton , aboutButton model.viewMode]
             , case model.viewMode of
                 ViewDefault ->
                     viewHyperCard model
@@ -194,18 +196,20 @@ mainColumn model =
             ]
         ]
 
-viewAbout model = 
-  Markdown.toHtml [] Docs.aboutDoc |> Element.html
+viewAbout model =
+  column [Font.size 14, width (px 500), height (px 600), scrollbarY, centerX, centerY] [ 
+     Markdown.toHtml [] Docs.aboutDoc |> Element.html
+     ]
 
 viewWithSourceAndHypercard model =
-    row [ width fill, spacing 12 ]
+    row [ width fill, spacing 12, centerX, centerY ]
         [ Input.multiline [ scrollbarY, height (px 580), alignTop, Font.size 14 ] { onChange = Dummy, text = model.input, placeholder = Nothing, label = Input.labelHidden "", spellcheck = False }
         , HyperCard.viewSection format sourceText model.currentSection |> Element.map HyperCard
         ]
 
 
 viewHyperCard model =
-    row [ alignTop ] [ HyperCard.viewSection format sourceText model.currentSection |> Element.map HyperCard ]
+    row [ alignTop, centerX, centerY ] [ HyperCard.viewSection format sourceText model.currentSection |> Element.map HyperCard ]
 
 
 format =
@@ -291,13 +295,15 @@ mainColumnStyle =
     [ centerX
     , centerY
     , bgGray 1.0
-    , paddingXY 20 20
+    , paddingXY 20 0
+    , width (px 1400), height (px 800)
     ]
 
 
 buttonStyle =
-    [ Background.color (Element.rgb 0.5 0.5 1.0)
+    [ Background.color (Element.rgb 0.5 0.5 0.5)
     , Font.color (rgb255 255 255 255)
+    , Font.size 14
     , paddingXY 15 8
     ]
 
