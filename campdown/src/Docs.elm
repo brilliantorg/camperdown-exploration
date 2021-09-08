@@ -1,4 +1,88 @@
-module Docs exposing (aboutDoc)
+module Docs exposing (aboutDoc, sample)
+
+sample = """
+*Note:* _This is the start of some documentation for Camperdown._
+
+! heading1  [Introduction]
+
+Camperdown is a markup language for non-hypertext branching storytelling. It tries to steal good ideas about branching-paths storytelling from the [Inkle](link "https://www.inklestudios.com/ink/") language, good ideas about markup languages from [Idyll](link "https://idyll-lang.org/docs") and some syntax from [Elm](link "https://elm-lang.org"). While Camperdown shares many features with Markdown, it is distinguished by
+
+! list >>
+   :  configurability
+
+   :  extensibility: new features can be added without changing       the language.
+
+   :  robust, real-time, and informative error handling.
+Configurability means that the markup language can be changed simply by changing the parser configuration. Extensibility means that new features can be added without changes to the parser, other than configuration. Robust error handling means that the parser will parse the entire input document even if it contains errors. Informative error messages are generated in real time so that an author can react to them as the document is being edited.
+
+! heading2  [Line commands]
+
+Markdown implements new features by implementing new prefixes, e.g., `[` to open a hyperlink, `![` to open a placed image, and `>>` to open a quotation. Camperdown achieves the same by a number of mechanisms, among which is the notion of a _line command._ Here are three examples, on which we elaborate below:
+
+%%% ! image
+    ! quote
+    ! table
+
+Thus one grammatical form suffices to parse an infinite set of distinct commands, one for each command name, "image," "quote," "table," etc. The host app, through its view and update functions, determines how line commands are interpreted.
+
+! heading2  [Images]
+
+Images are rendered by a line commmand like the one below.
+
+%%% ! image "URL for the bird"
+
+! image "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/303881651/1800"
+
+! heading2  [Quotations]
+
+The format of the `quote` line commmand is slightly different. The command name `quote` is followed by the chevron `>>`, which indicates that "children" follow. In the case at hand, the children, which must be indented, are ordinary text.
+
+%%% ! quote >>
+
+      Paragraph 1
+
+      Paragraph 2
+
+      ...
+
+! quote >>
+   Four score and seven years ago our fathers brought    forth upon this continent, a new nation, conceived in    Liberty, and dedicated to the proposition that all men    are created equal.
+
+   Now we are engaged in a great civil war, testing whether    that nation, or any nation so conceived and so dedicated,    can long endure. We are met on a great battle-field of    that war. We have come to dedicate a portion of that    field, as a final resting place for those who here gave    their lives that that nation might live. It is altogether    fitting and proper that we should do this.
+
+   --- Abraham Lincoln
+! heading2  [Tables]
+
+In the table example below, we see two kinds of line commmands, those with _mark_ `!` and those with mark `?`. The latter are "subcommands," used to signal rows and cells of the table.
+
+%%% ! table >>
+      ? row >>
+      ? [*Pizza*]
+      ? [*Price*]
+      ? [*Quantity Ordered*]
+
+! table >>
+   ? row >>
+      ? [*Pizza*]
+
+      ? [*Price*]
+
+      ? [*Quantity Ordered*]
+   ? row >>
+      ? [~Cheese~]
+
+      ? [\\$10.00]
+
+      ? [$5$]
+   ? row >>
+      ? [Pepperoni]
+
+      ? [\\$12.00]
+
+      ? [$7$]
+
+"""
+
 
 aboutDoc = """
 

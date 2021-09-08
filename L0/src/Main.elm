@@ -174,7 +174,7 @@ bgGray g =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "Campdown Demo"
+    { title = "L0 Markup Demo"
     , body = [ Element.layout [ bgGray 0.2, centerX, centerY ] (mainColumn model) ]
     }
 
@@ -184,7 +184,7 @@ mainColumn model =
     column mainColumnStyle
         [ column [ spacing 36, width (px 1200), height (px 800), scrollbarY ]
             [ row [ spacing 12, centerX, centerY ]
-                [ el [ Font.size 24 ] (text "Campdown Demo")
+                [ el [ Font.size 24 ] (text "L0 Markup Demo")
                 , toggleViewButton model.viewMode
                 , requestFileButton
                 , aboutButton model.viewMode
@@ -410,39 +410,29 @@ buttonStyle =
 -- DATA
 
 
-sourceText9 =
-    """
-Math: $\\LaTeX$"""
-
-
-sourceText6 =
-    """
-The text of a lesson is pretty simple. You can use **bold** and _italic_ text. You can add inline math using $\\LaTeX$.
-"""
-
-
-sourceText7 =
-    """
-%%% You can add comments if you need them.
-    Comments can span multiple lines if necessary. Just keep indenting
-"""
-
-
-sourceText8 =
-    """
-You can also add preformatted text blocks (i.e. code blocks)
-using $```$, and you can add multi-line math with `$$$`.
-They look like this:
-"""
-
-
 sourceText =
     """
+
+
 [image [opt width:300, caption:'Blue bird'] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
+[heading1 The L0 Markup Language]
 
-[blue flowers]
+L0 is a simple yet versatile markup language that takes inspiration from Lisp.  An L0 document consists of ordinary text and [quote elements], e.g., `[blue flowers]`, which is rendered as [blue flowers].  Elements can be nested, as in `[blue [i delicate blue] flowers]`, which renders as [blue [i delicate blue] flowers].
+
+In addtions to the [quote pure L0] just described, we have borrowed from Markdown.  For example, inline code can set off by backticks:
+
+%%%
+     This is code: `a[i] = a[i] + 1`
+
+The version of L0 that you see here is implemented in [link Elm https://elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest]
 
 
-[blue [i flowers]]
+[heading2 the rest]
+
+In the Spring, I will be looking for [blue blue flowers] and [red [i red butterflies!]]
+
+
+[image https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
+
 """
