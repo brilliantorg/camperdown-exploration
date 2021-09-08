@@ -1,0 +1,5 @@
+scripts:
+
+  live: elm-live src/Main.elm --open
+
+  make: elm make src/Main.elm --output=dist/Main.js
