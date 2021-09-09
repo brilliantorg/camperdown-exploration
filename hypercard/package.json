@@ -1,0 +1,22 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "Demo of camperdown parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jxxcarlson/campdown.git"
+  },
+  "author": "James Carlson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jxxcarlson/campdown/issues"
+  },
+  "homepage": "https://github.com/jxxcarlson/campdown#readme",
+  "dependencies": {
+    "codemirror": "^5.62.3"
+  }
+}
