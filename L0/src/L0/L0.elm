@@ -85,12 +85,11 @@ fDict =
         , ( "quote", \format expr -> quote format expr )
         , ( "link", \format expr -> link format expr )
         , ( "item", \format expr -> item format expr )
-
-          , ( "sum", \format expr -> Widget.sum expr )
+         , ( "sum", \format expr -> Widget.sum expr )
         , ( "preformatted", \format expr -> preformatted format expr )
         , ( "indent", \format expr -> indent format expr )
 
-        -- , ( "bargraph", \format expr -> Widget.bargraph args expr )
+        , ( "bargraph", \format expr -> Widget.bargraph format expr )
         --, ( "spreadsheet", \format args expr -> spreadsheet format args expr )
         --, ( "row", \format args expr -> Element.none )
         --, ( "list", \format args expr -> list format args expr )
