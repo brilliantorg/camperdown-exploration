@@ -3,29 +3,30 @@ module L0.Widget exposing (bargraph, sum)
 import Dict exposing (Dict)
 import Element as E exposing (column, el, paragraph, px, row, spacing, text)
 import Element.Font as Font
+import L0.ASTTools
 import L0.MExpression exposing (MExpression(..))
 import L0.Utility as Utility
 import List.Extra
 import Maybe.Extra
 import SimpleGraph exposing (Option(..), barChart, lineChart, scatterPlot)
 
-
-sum : List String -> MExpression -> E.Element msg
-sum args body =
+sumHelper : String -> String -> E.Element msg
+sumHelper options str =
     let
-        numbers_ =
-            Utility.getTextList body
-
-        numbers =
-            List.map String.toFloat numbers_ |> Maybe.Extra.values
-
-        sum_ =
-            List.sum numbers
-
-        precision =
-            Utility.getPrecisionWithDefault 2 args
+        data = String.words str
+        value = data |>  List.map String.toFloat |> Maybe.Extra.values |> List.sum
+        dict = Utility.keyValueDictFromString options
+        precision = Dict.get "precision" dict |> Maybe.andThen String.toInt |> Maybe.withDefault 1
     in
-    row [ spacing 8 ] (text "sum" :: List.map text numbers_ ++ [ text "=" ] ++ [ text (String.fromFloat (Utility.roundTo precision sum_)) ])
+    row [ spacing 8 ] (text "sum" :: List.map text data ++ [ text "=" ] ++ [ text (String.fromFloat (Utility.roundTo precision value)) ])
+
+sum : MExpression -> E.Element msg
+sum expr =
+    case L0.ASTTools.normalize expr of
+        MList [Literal data] -> sumHelper "" data
+        MList [MElement "opt" (MList [Literal options]),Literal data] -> sumHelper options data
+        _ -> E.el [] (E.text "Bad data for sum")
+
 
 
 

@@ -51,6 +51,15 @@ getPrecision args =
     Dict.get "precision" dict |> Maybe.andThen String.toInt
 
 
+keyValueDictFromString : String -> Dict String String
+keyValueDictFromString str =
+    str |> String.words
+        |> List.map (String.split ":")
+        |> List.map (List.map String.trim)
+        |> List.map pairFromList
+        |> Maybe.Extra.values
+        |> Dict.fromList
+
 keyValueDict : List String -> Dict String String
 keyValueDict strings_ =
     List.map (String.split ":") strings_

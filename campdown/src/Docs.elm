@@ -1,6 +1,7 @@
 module Docs exposing (aboutDoc, sample)
 
 sample = """
+
 *Note:* _This is the start of some documentation for Camperdown._
 
 ! heading1  [Introduction]
