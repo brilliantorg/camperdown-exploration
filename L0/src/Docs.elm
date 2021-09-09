@@ -21,7 +21,7 @@ Camperdown is an open-source version of the fault-tolerant parser developed at [
 
 [item [link "Hypercard Demo" https://focused-ardinghelli-051c12.netlify.app/]]
 
-[item [link "L0 Demo" https://cocky-nightingale-a14dab.netlify.app/]]
+[item [link "This L0 Demo" https://cocky-nightingale-a14dab.netlify.app/]]
 
 [heading2 To be continued]
 
