@@ -1,4 +1,4 @@
-module L0.ASTTools exposing (..)
+module L0.ASTTools exposing (normalize)
 
 import L0.MExpression exposing (MExpression(..))
 

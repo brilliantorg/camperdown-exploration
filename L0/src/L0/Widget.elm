@@ -6,9 +6,23 @@ import Element.Font as Font
 import L0.ASTTools
 import L0.MExpression exposing (MExpression(..))
 import L0.Utility as Utility
-import List.Extra
 import Maybe.Extra
 import SimpleGraph exposing (Option(..), barChart, lineChart, scatterPlot)
+
+{-|  Compute the sum of a list of numbers.
+     Examples (must be parsed, use the app):
+
+     [sum 11.4 4.5 -7.7]
+     [sum [opt precision:3] 0.02 0.015 -0.009]
+
+-}
+sum : MExpression -> E.Element msg
+sum expr =
+    case L0.ASTTools.normalize expr of
+        MList [Literal data] -> sumHelper "" data
+        MList [MElement "opt" (MList [Literal options]),Literal data] -> sumHelper options data
+        _ -> E.el [] (E.text "Bad data for sum")
+
 
 sumHelper : String -> String -> E.Element msg
 sumHelper options str =
@@ -20,22 +34,15 @@ sumHelper options str =
     in
     row [ spacing 8 ] (text "sum" :: List.map text data ++ [ text "=" ] ++ [ text (String.fromFloat (Utility.roundTo precision value)) ])
 
-sum : MExpression -> E.Element msg
-sum expr =
-    case L0.ASTTools.normalize expr of
-        MList [Literal data] -> sumHelper "" data
-        MList [MElement "opt" (MList [Literal options]),Literal data] -> sumHelper options data
-        _ -> E.el [] (E.text "Bad data for sum")
 
 
 
-stringToListOfFloat : String -> List Float
-stringToListOfFloat str =
-    str
-      |> String.split ","
-      |> List.map (String.trim >> String.toFloat)
-      |> Maybe.Extra.values
+{-|  Display a bar graph given a list of numbers.
+     Example (must be parsed, use the app):
 
+     [bargraph 1.2, 1.3, 2.4, 3.1, 2.9, 2.2, 1.8, 2.5, 2.7]
+
+-}
 bargraph format expr =
     let
         info = case L0.ASTTools.normalize expr of
@@ -101,3 +108,10 @@ captionElement dict =
         Nothing ->
             E.none
 
+
+stringToListOfFloat : String -> List Float
+stringToListOfFloat str =
+    str
+      |> String.split ","
+      |> List.map (String.trim >> String.toFloat)
+      |> Maybe.Extra.values

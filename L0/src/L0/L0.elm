@@ -53,14 +53,6 @@ viewInlineCode str =
     el [ Font.family [ Font.typeface "Courier", Font.monospace ], Font.color verbatimColor ] (Element.text str)
 
 
-unimplemented message content =
-    el [ Font.size 14, Font.color (Element.rgb255 240 200 200) ] (text <| message ++ ": " ++ content)
-
-
-pe =
-    paddingEach { top = 0, bottom = 12, left = 0, right = 0 }
-
-
 viewElement : Format -> String -> MExpression -> Element msg
 viewElement format fname mexpr =
     case Dict.get fname fDict of
@@ -85,11 +77,11 @@ fDict =
         , ( "quote", \format expr -> quote format expr )
         , ( "link", \format expr -> link format expr )
         , ( "item", \format expr -> item format expr )
-         , ( "sum", \format expr -> Widget.sum expr )
+        , ( "sum", \format expr -> Widget.sum expr )
         , ( "preformatted", \format expr -> preformatted format expr )
         , ( "indent", \format expr -> indent format expr )
-
         , ( "bargraph", \format expr -> Widget.bargraph format expr )
+
         --, ( "spreadsheet", \format args expr -> spreadsheet format args expr )
         --, ( "row", \format args expr -> Element.none )
         --, ( "list", \format args expr -> list format args expr )
@@ -98,9 +90,11 @@ fDict =
 
 item format expr =
     let
-        itemPadding = Element.paddingEach {top = 8, bottom = 8, left =24, right = 0}
+        itemPadding =
+            Element.paddingEach { top = 8, bottom = 8, left = 24, right = 0 }
     in
-    Element.wrappedRow [itemPadding, width (px format.lineWidth), Element.centerY] [el [Font.size 18] (text "•"), view format expr]
+    Element.wrappedRow [ itemPadding, width (px format.lineWidth), Element.centerY ] [ el [ Font.size 18 ] (text "•"), view format expr ]
+
 
 quote format expr =
     case expr of
@@ -112,7 +106,7 @@ quote format expr =
 
 
 link format expr =
-    case (L0.ASTTools.normalize expr)  of
+    case L0.ASTTools.normalize expr of
         MList [ Literal str ] ->
             case String.words str of
                 [ label, url ] ->
@@ -127,15 +121,15 @@ link format expr =
                         , label = el [ linkColor ] (text url)
                         }
 
-
                 _ ->
                     Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text "Bad data for link")
 
-        MList [ Literal label, Literal url] ->
+        MList [ Literal label, Literal url ] ->
             newTabLink []
                 { url = url
                 , label = el [ linkColor ] (text label)
                 }
+
         _ ->
             Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text "Bad data for link")
 
@@ -177,35 +171,49 @@ image format expr_ =
             500
     in
     case L0.ASTTools.normalize expr_ of
-        MList [MElement "opt" (MList [Literal options]),Literal url_] ->
+        MList [ MElement "opt" (MList [ Literal options ]), Literal url_ ] ->
             let
-              dict = Utility.keyValueDictFromString options
-              caption = Dict.get "caption" dict |> Maybe.withDefault ""
-              w2 = case Dict.get "width" dict of
-                     Nothing  -> w
-                     Just w_ -> String.toInt w_ |> Maybe.withDefault w
+                dict =
+                    Utility.keyValueDictFromString options
 
+                caption =
+                    Dict.get "caption" dict |> Maybe.withDefault ""
+
+                w2 =
+                    case Dict.get "width" dict of
+                        Nothing ->
+                            w
+
+                        Just w_ ->
+                            String.toInt w_ |> Maybe.withDefault w
             in
             column [ spacing 8, Element.width (px w2) ]
                 [ Element.image [ Element.width (px w2) ]
                     { src = url_, description = "image" }
-                  ,el [Font.size 12] (Element.text caption)
+                , el [ Font.size 12 ] (Element.text caption)
                 ]
 
-        MList [MElement "opt" (MList [Literal options]), Verbatim '`' url_] ->
-                    let
-                      dict = Utility.keyValueDictFromString options
-                      caption = Dict.get "caption" dict |> Maybe.withDefault ""
-                      w2 = case Dict.get "width" dict of
-                             Nothing  -> w
-                             Just w_ -> String.toInt w_ |> Maybe.withDefault w
+        MList [ MElement "opt" (MList [ Literal options ]), Verbatim '`' url_ ] ->
+            let
+                dict =
+                    Utility.keyValueDictFromString options
 
-                    in
-                    column [ spacing 8, Element.width (px w2) ]
-                        [ Element.image [ Element.width (px w2) ]
-                            { src = url_, description = "image" }
-                          ,el [Font.size 12] (Element.text caption)
-                        ]
+                caption =
+                    Dict.get "caption" dict |> Maybe.withDefault ""
+
+                w2 =
+                    case Dict.get "width" dict of
+                        Nothing ->
+                            w
+
+                        Just w_ ->
+                            String.toInt w_ |> Maybe.withDefault w
+            in
+            column [ spacing 8, Element.width (px w2) ]
+                [ Element.image [ Element.width (px w2) ]
+                    { src = url_, description = "image" }
+                , el [ Font.size 12 ] (Element.text caption)
+                ]
 
         MList [ Literal url_ ] ->
             column [ spacing 8, Element.width (px w) ]
@@ -213,7 +221,7 @@ image format expr_ =
                     { src = url_, description = "image" }
                 ]
 
-        MList [Verbatim '`' url_] ->
+        MList [ Verbatim '`' url_ ] ->
             column [ spacing 8, Element.width (px w) ]
                 [ Element.image [ Element.width (px w) ]
                     { src = url_, description = "image" }
@@ -289,10 +297,6 @@ getPrefixSymbol k dict =
 --            Element.none
 
 
-redColor =
-    rgb 0.7 0 0
-
-
 elementTitle args_ =
     let
         dict =
@@ -307,14 +311,6 @@ elementTitle args_ =
 
         Just title_ ->
             el [ Font.size titleSize ] (text title_)
-
-
-titleSize =
-    14
-
-
-listPadding =
-    paddingEach { left = 18, right = 0, top = 8, bottom = 0 }
 
 
 spreadsheet format args body =
@@ -355,41 +351,6 @@ getCSV element =
             [ [] ]
 
 
-extractText : MExpression -> Maybe String
-extractText element =
-    case element of
-        Literal content ->
-            Just content
-
-        _ ->
-            Nothing
-
-
-indentPadding =
-    paddingEach { left = 24, right = 0, top = 0, bottom = 0 }
-
-
-
---getRows_ body =
---    case body of
---        MList list_ ->
---            List.map getRow list_
---                |> List.filter (\s -> s /= "")
---                |> List.map (String.split ",")
---                |> List.map (List.map String.trim)
---
---        _ ->
---            [ [] ]
---
---getRow element =
---    case element of
---        MElement "row" [] (MList [ Literal t ]) ->
---            t
---
---        _ ->
---            ""
-
-
 indent : Format -> MExpression -> Element msg
 indent format expr =
     column [ paddingEach { left = 18, right = 0, top = 0, bottom = 0 } ] [ view format expr ]
@@ -409,8 +370,50 @@ preformatted format expr =
         (text (Utility.extractText expr |> Maybe.withDefault "(no text)" |> String.dropLeft 3 |> (\x -> "    " ++ x)))
 
 
+
+-- COLORS
+
+
 verbatimColor =
     rgb255 150 0 220
+
+
+linkColor =
+    Font.color (Element.rgb255 0 0 245)
+
+
+redColor =
+    rgb 0.7 0 0
+
+
+
+-- SETTINGS
+
+
+titleSize =
+    14
+
+
+indentPadding =
+    paddingEach { left = 24, right = 0, top = 0, bottom = 0 }
+
+
+listPadding =
+    paddingEach { left = 18, right = 0, top = 8, bottom = 0 }
+
+
+
+-- HELPERS
+
+
+extractText : MExpression -> Maybe String
+extractText element =
+    case element of
+        Literal content ->
+            Just content
+
+        _ ->
+            Nothing
 
 
 unquote : String -> String
@@ -418,70 +421,13 @@ unquote str =
     String.replace "\"" "" str
 
 
-linkColor =
-    Font.color (Element.rgb255 0 0 245)
-
-
-image1 : Format -> List String -> MExpression -> Element msg
-image1 format args body =
-    let
-        dict =
-            Utility.keyValueDict args
-
-        description =
-            Dict.get "caption" dict |> Maybe.withDefault ""
-
-        caption =
-            case Dict.get "caption" dict of
-                Nothing ->
-                    none
-
-                Just c ->
-                    row [ placement, Element.width fill ] [ el [ Element.width fill ] (text c) ]
-
-        width =
-            case Dict.get "width" dict of
-                Nothing ->
-                    px displayWidth
-
-                Just w_ ->
-                    case String.toInt w_ of
-                        Nothing ->
-                            px displayWidth
-
-                        Just w ->
-                            px w
-
-        placement =
-            case Dict.get "placement" dict of
-                Nothing ->
-                    centerX
-
-                Just "left" ->
-                    alignLeft
-
-                Just "right" ->
-                    alignRight
-
-                Just "center" ->
-                    centerX
-
-                _ ->
-                    centerX
-
-        displayWidth =
-            format.lineWidth
-    in
-    column [ spacing 8, Element.width (px displayWidth), placement ]
-        [ Element.image [ Element.width width, placement ]
-            { src = getText body |> Maybe.withDefault "no image url" |> unquote, description = description }
-        , caption
-        ]
-
-
 htmlAttribute : String -> String -> Element.Attribute msg
 htmlAttribute key value =
     Element.htmlAttribute (Html.Attributes.attribute key value)
+
+
+unimplemented message content =
+    el [ Font.size 14, Font.color (Element.rgb255 240 200 200) ] (text <| message ++ ": " ++ content)
 
 
 getText : MExpression -> Maybe String

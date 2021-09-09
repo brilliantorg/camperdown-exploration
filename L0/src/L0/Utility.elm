@@ -1,4 +1,4 @@
-module L0.Utility exposing (..)
+module L0.Utility exposing (extractText, keyValueDict, keyValueDictFromString, roundTo)
 
 import Dict exposing (Dict)
 import L0.MExpression exposing (MExpression(..))
@@ -38,28 +38,17 @@ extractText mexpr =
             Nothing
 
 
-getPrecisionWithDefault default args =
-    getPrecision args |> Maybe.withDefault default
-
-
-getPrecision : List String -> Maybe Int
-getPrecision args =
-    let
-        dict =
-            keyValueDict args
-    in
-    Dict.get "precision" dict |> Maybe.andThen String.toInt
-
-
 keyValueDictFromString : String -> Dict String String
 keyValueDictFromString str =
-    str |> String.split ","
+    str
+        |> String.split ","
         |> List.map String.trim
         |> List.map (String.split ":")
         |> List.map (List.map String.trim)
         |> List.map pairFromList
         |> Maybe.Extra.values
         |> Dict.fromList
+
 
 keyValueDict : List String -> Dict String String
 keyValueDict strings_ =

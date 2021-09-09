@@ -1,4 +1,4 @@
-module L0.MExpression exposing (MExpression(..), fromElement, getText)
+module L0.MExpression exposing (MExpression(..), fromElement)
 
 import Camperdown.Loc as Loc
 import Camperdown.Parse.Syntax as Syntax
@@ -47,7 +47,7 @@ fromText text =
             Verbatim char str
 
         Syntax.Annotation prefix textList _ _ ->
-            if (not <| List.member (Loc.value prefix) ["[", "\""]) then
+            if not <| List.member (Loc.value prefix) [ "[", "\"" ] then
                 MProblem "Error: '[' expected"
 
             else
@@ -66,7 +66,8 @@ fromText text =
                         case head of
                             Syntax.Raw str ->
                                 if Loc.value prefix == "\"" then
-                                   Literal str
+                                    Literal str
+
                                 else if Loc.value prefix == "[" then
                                     let
                                         firstSpace =
@@ -114,9 +115,8 @@ fromText text =
                                             else
                                                 MElement fname (MList (Literal arg :: List.map fromText rest))
 
-
                                 else
-                                   Literal "(I was expecting '[' or '\"')"
+                                    Literal "(I was expecting '[' or '\"')"
 
                             _ ->
                                 Literal "(malformed annotation)"

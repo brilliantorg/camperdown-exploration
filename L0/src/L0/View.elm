@@ -8,6 +8,11 @@ import L0.L0 as ViewMExpression exposing (Format)
 import L0.MExpression as MExpression exposing (MExpression)
 
 
+view : Format -> String -> Syntax.Document -> List (Element.Element msg)
+view format _ { prelude, sections } =
+    viewElements format prelude :: List.map (viewSection format) sections
+
+
 viewSection : Format -> Syntax.Section -> Element.Element msg
 viewSection format { level, contents, label } =
     let
@@ -28,11 +33,6 @@ viewSection format { level, contents, label } =
         ]
 
 
-view : Format -> String -> Syntax.Document -> List (Element.Element msg)
-view format _ { prelude, sections } =
-    viewElements format prelude :: List.map (viewSection format) sections
-
-
 viewElements : Format -> List Syntax.Element -> Element.Element msg
 viewElements format elements =
     column [ width (px format.lineWidth), spacing 18 ] <| List.map (\element_ -> viewElement format element_) elements
@@ -47,11 +47,9 @@ styleOfLevel : Int -> List (Element.Attribute msg)
 styleOfLevel k =
     case k of
         1 ->
-            -- original 18
             [ Font.size 22, Font.bold, paddingEach { top = 10, bottom = 12, left = 0, right = 0 } ]
 
         2 ->
-            -- original 17
             [ Font.size 18, Font.bold, Font.italic, paddingEach { top = 9, bottom = 10, left = 0, right = 0 } ]
 
         3 ->
@@ -65,16 +63,6 @@ paddingBelow =
     paddingEach { top = 0, bottom = 18, right = 0, left = 0 }
 
 
-monospace : Attribute msg
-monospace =
-    Font.family [ Font.typeface "Source Code Pro", Font.monospace ]
-
-
 sans : Attribute msg
 sans =
     Font.family [ Font.typeface "Soleil", Font.typeface "Arial", Font.sansSerif ]
-
-
-htmlAttribute : String -> String -> Attribute msg
-htmlAttribute key value =
-    Element.htmlAttribute (Html.Attributes.attribute key value)
