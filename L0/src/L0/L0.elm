@@ -81,6 +81,7 @@ fDict =
         , ( "preformatted", \format expr -> preformatted format expr )
         , ( "indent", \format expr -> indent format expr )
         , ( "bargraph", \format expr -> Widget.bargraph format expr )
+        , ( "datatable", \format expr -> dataTable format expr )
 
         --, ( "spreadsheet", \format args expr -> spreadsheet format args expr )
         --, ( "row", \format args expr -> Element.none )
@@ -231,6 +232,35 @@ image format expr_ =
             Element.el [ Font.size 14 ] (Element.text "Error: bad data for image")
 
 
+dataTable format expr_ =
+    let
+        info =
+            case L0.ASTTools.normalize expr_ of
+                MList [ Literal rawData ] ->
+                    Just ( Dict.empty, getCSV2 ";" ";;" rawData )
+
+                MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
+                    Just ( Utility.keyValueDictFromString options, getCSV2 ";" ";;" rawData )
+
+                _ ->
+                    Nothing
+    in
+    case info of
+        Nothing ->
+            el [ Font.size 14 ] (text "Invalid data for bar graph")
+
+        Just ( dict, data ) ->
+            renderDataTable dict data
+
+
+renderDataTable dict data =
+    column [ spacing 8 ] (List.map renderRow data)
+
+
+renderRow data =
+    row [ spacing 8 ] (List.map (\s -> el [ width (px 100) ] (text s)) data)
+
+
 
 --list format args_ body =
 --    let
@@ -313,28 +343,29 @@ elementTitle args_ =
             el [ Font.size titleSize ] (text title_)
 
 
-spreadsheet format args body =
-    let
-        spreadsheet1 =
-            getCSV body
-                |> Spreadsheet.readFromList CellParserExcel.parse
-                |> Spreadsheet.eval
 
-        spreadsheet2 : List (List String)
-        spreadsheet2 =
-            Spreadsheet.printAsList spreadsheet1
+--spreadsheet format args body =
+--    let
+--        spreadsheet1 =
+--            getCSV body
+--                |> Spreadsheet.readFromList CellParserExcel.parse
+--                |> Spreadsheet.eval
+--
+--        spreadsheet2 : List (List String)
+--        spreadsheet2 =
+--            Spreadsheet.printAsList spreadsheet1
+--
+--        renderItem str =
+--            el [ width (px 60) ] (el [ alignRight ] (text str))
+--
+--        renderRow items =
+--            row [ spacing 10 ] (List.map renderItem items)
+--    in
+--    column [ spacing 8, indentPadding ] (List.map renderRow spreadsheet2)
 
-        renderItem str =
-            el [ width (px 60) ] (el [ alignRight ] (text str))
 
-        renderRow items =
-            row [ spacing 10 ] (List.map renderItem items)
-    in
-    column [ spacing 8, indentPadding ] (List.map renderRow spreadsheet2)
-
-
-getCSV : MExpression -> List (List String)
-getCSV element =
+getCSV : String -> String -> MExpression -> List (List String)
+getCSV fieldSep recordSep element =
     case element of
         MList list_ ->
             case List.map extractText list_ of
@@ -342,13 +373,22 @@ getCSV element =
                     data
                         |> Maybe.Extra.values
                         |> String.join ""
-                        |> String.split ";;"
+                        |> String.split recordSep
                         |> List.filter (\line -> line /= "")
-                        |> List.map (String.split ";")
+                        |> List.map (String.split fieldSep)
                         |> List.map (List.map String.trim)
 
         _ ->
             [ [] ]
+
+
+getCSV2 : String -> String -> String -> List (List String)
+getCSV2 fieldSep recordSep data =
+    data
+        |> String.split recordSep
+        |> List.filter (\line -> line /= "")
+        |> List.map (String.split fieldSep)
+        |> List.map (List.map String.trim)
 
 
 indent : Format -> MExpression -> Element msg

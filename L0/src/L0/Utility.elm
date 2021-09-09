@@ -1,4 +1,10 @@
-module L0.Utility exposing (extractText, keyValueDict, keyValueDictFromString, roundTo)
+module L0.Utility exposing
+    ( extractText
+    , keyValueDict
+    , keyValueDictFromString
+    , roundTo
+    , stringToListOfFloat
+    )
 
 import Dict exposing (Dict)
 import L0.MExpression exposing (MExpression(..))
@@ -76,3 +82,11 @@ roundTo k x =
             10.0 ^ toFloat k
     in
     toFloat (round (factor * x)) / factor
+
+
+stringToListOfFloat : String -> List Float
+stringToListOfFloat str =
+    str
+        |> String.split ","
+        |> List.map (String.trim >> String.toFloat)
+        |> Maybe.Extra.values
