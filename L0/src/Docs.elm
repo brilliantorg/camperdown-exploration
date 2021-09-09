@@ -5,6 +5,8 @@ sourceText = """
 
 
 
+
+
 [image [opt width:300, caption:'Blue bird'] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
@@ -18,7 +20,7 @@ In addtions to the [quote pure L0] just described, we have borrowed from Markdow
 
 The version of L0 that you see here is implemented in [link Elm https://elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library.
 
-Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite diffrent apps, e.g.,
+Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
 
 [item [link "Campdown Demo" https://trusting-jang-9723b7.netlify.app/]]
 
@@ -56,5 +58,6 @@ In the Spring, I will be looking for [blue blue flowers] and [red [i red butterf
 
 
 [image https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
+
 
 """
