@@ -144,28 +144,28 @@ link format expr =
 heading1 format expr =
     case expr of
         MList [ Literal str ] ->
-            Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text str)
+            Element.el [ Font.size 32, verticalPadding 64 8 ] (Element.text str)
 
         _ ->
-            Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text "Bad data for heading")
+            Element.el [ Font.size 32, verticalPadding 64 8 ] (Element.text "Bad data for heading")
 
 
 heading2 format expr =
     case expr of
         MList [ Literal str ] ->
-            Element.el [ Font.size 24, verticalPadding 24 8 ] (Element.text str)
+            Element.el [ Font.size 24, verticalPadding 48 8 ] (Element.text str)
 
         _ ->
-            Element.el [ Font.size 24, verticalPadding 24 8 ] (Element.text "Bad data for heading")
+            Element.el [ Font.size 24, verticalPadding 48 8 ] (Element.text "Bad data for heading")
 
 
 heading3 format expr =
     case expr of
         MList [ Literal str ] ->
-            Element.el [ Font.size 18, verticalPadding 18 8 ] (Element.text str)
+            Element.el [ Font.size 18, verticalPadding 36 8 ] (Element.text str)
 
         _ ->
-            Element.el [ Font.size 18, verticalPadding 18 8 ] (Element.text "Bad data for heading")
+            Element.el [ Font.size 18, verticalPadding 36 8 ] (Element.text "Bad data for heading")
 
 
 verticalPadding top bottom =
@@ -176,15 +176,21 @@ image format expr_ =
     let
         w =
             500
-
-        expr =
-            Debug.log "EXPR" (L0.ASTTools.normalize expr_)
     in
-    case expr of
-        MList [ opts_, Literal url_ ] ->
-            column [ spacing 8, Element.width (px w) ]
-                [ Element.image [ Element.width (px w) ]
+    case L0.ASTTools.normalize expr_ of
+        MList [MElement "opt" (MList [Literal options]),Literal url_] ->
+            let
+              dict = Utility.keyValueDictFromString options
+              caption = Dict.get "caption" dict |> Maybe.withDefault ""
+              w2 = case Dict.get "width" dict of
+                     Nothing  -> w
+                     Just w_ -> String.toInt w_ |> Maybe.withDefault w
+
+            in
+            column [ spacing 8, Element.width (px w2) ]
+                [ Element.image [ Element.width (px w2) ]
                     { src = url_, description = "image" }
+                  ,el [Font.size 12] (Element.text caption)
                 ]
 
         MList [ Literal url_ ] ->

@@ -53,7 +53,8 @@ getPrecision args =
 
 keyValueDictFromString : String -> Dict String String
 keyValueDictFromString str =
-    str |> String.words
+    str |> String.split ","
+        |> List.map String.trim
         |> List.map (String.split ":")
         |> List.map (List.map String.trim)
         |> List.map pairFromList
