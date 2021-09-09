@@ -2,6 +2,7 @@ module Docs exposing (sourceText)
 
 sourceText = """
 
+
 [image [opt caption:The L0 Mascot] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
@@ -51,8 +52,6 @@ This renders as
 
 For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
 
-[image `https://upload.wikimedia.org/wikipedia/commons/2/20/Camperdown_Elm_Prospect_Park_Brooklyn.jpg`]
-
-
+[image [opt caption: Camperdown Elm Tree] `https://upload.wikimedia.org/wikipedia/commons/2/20/Camperdown_Elm_Prospect_Park_Brooklyn.jpg`]
 
 """

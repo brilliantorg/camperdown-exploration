@@ -193,6 +193,21 @@ image format expr_ =
                   ,el [Font.size 12] (Element.text caption)
                 ]
 
+        MList [MElement "opt" (MList [Literal options]), Verbatim '`' url_] ->
+                    let
+                      dict = Utility.keyValueDictFromString options
+                      caption = Dict.get "caption" dict |> Maybe.withDefault ""
+                      w2 = case Dict.get "width" dict of
+                             Nothing  -> w
+                             Just w_ -> String.toInt w_ |> Maybe.withDefault w
+
+                    in
+                    column [ spacing 8, Element.width (px w2) ]
+                        [ Element.image [ Element.width (px w2) ]
+                            { src = url_, description = "image" }
+                          ,el [Font.size 12] (Element.text caption)
+                        ]
+
         MList [ Literal url_ ] ->
             column [ spacing 8, Element.width (px w) ]
                 [ Element.image [ Element.width (px w) ]
