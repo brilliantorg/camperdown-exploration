@@ -1,11 +1,12 @@
 module Docs exposing (sourceText)
 
 sourceText = """
+
 [image [opt width:300, caption:'Blue bird'] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
 
-L0 is a simple yet versatile markup language that takes inspiration from Lisp.  An L0 document consists of ordinary text and [quote elements], e.g., `[blue flowers]`, which is rendered as [blue flowers].  Elements can be nested, as in `[blue [i delicate blue] flowers]`, which renders as [blue [i delicate blue] flowers].
+L0 is a simple yet versatile markup language that takes inspiration from Lisp.  An L0 document consists of ordinary text and [quote M-expressions], e.g., `[blue flowers]`, which is rendered as [blue flowers].  M-expressions can be nested, as in `[blue [i delicate blue] flowers]`, which renders as [blue [i delicate blue] flowers].
 
 In addtions to the [quote pure L0] just described, we have borrowed from Markdown.  For example, inline code can set off by backticks:
 
@@ -28,7 +29,5 @@ In the Spring, I will be looking for [blue blue flowers] and [red [i red butterf
 
 
 [image https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
-
-
 
 """
