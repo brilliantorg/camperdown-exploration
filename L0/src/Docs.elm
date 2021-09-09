@@ -2,11 +2,6 @@ module Docs exposing (sourceText)
 
 sourceText = """
 
-
-
-
-
-
 [image [opt width:300, caption:'Blue bird'] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
@@ -52,12 +47,12 @@ This renders as
    [sum [opt precision:3] 0.02 0.015 -0.009]
 ]
 
-[heading2 To be continued]
+[heading2 Footnote]
 
-In the Spring, I will be looking for [blue blue flowers] and [red [i red butterflies!]]
+For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
 
+[image `https://upload.wikimedia.org/wikipedia/commons/2/20/Camperdown_Elm_Prospect_Park_Brooklyn.jpg`]
 
-[image https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 
 """

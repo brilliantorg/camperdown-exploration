@@ -193,6 +193,12 @@ image format expr_ =
                     { src = url_, description = "image" }
                 ]
 
+        MList [Verbatim '`' url_] ->
+            column [ spacing 8, Element.width (px w) ]
+                [ Element.image [ Element.width (px w) ]
+                    { src = url_, description = "image" }
+                ]
+
         _ ->
             Element.el [ Font.size 14 ] (Element.text "Error: bad data for image")
 
