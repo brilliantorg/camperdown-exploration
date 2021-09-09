@@ -1,6 +1,8 @@
 module Docs exposing (sourceText)
 
-sourceText = """
+
+sourceText =
+    """
 
 
 
@@ -16,11 +18,11 @@ L0 is a simple yet versatile markup language that takes inspiration from Lisp.  
 In addition to the [quote pure L0] just described, we have borrowed from Markdown.  For example, inline code can set off by backticks:
 
 %%%
-     This is code: `a[i] = a[i] + 1`
+      This is code: `a[i] = a[i] + 1`
 
 Here is the rendered version:
 
-[indent  This is code `a[i] = a[i] + 1`]
+[indent  This is code: `a[i] = a[i] + 1`]
 
 The version of L0 that you see here is implemented in [link Elm https://elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library. Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
 
@@ -34,14 +36,23 @@ The version of L0 that you see here is implemented in [link Elm https://elm-lang
 
 
 
-In L0, one can easily implement [i widgets] that carry out computations or produce graphical output.
+In L0, one can easily implement [i widgets] that display data, carry out computations, or produce graphical output.
+
+
+[heading3 Tables]
+
+%%%
+      [datatable H, 1, 1.008; He, 2, 4.003;]
+
+[indent
+[datatable H, 1, 1.008; He, 2, 4.003; Li, 3, 6.940; Be, 4, 9.012; B, 5, 10.810; C, 6, 12.011; N, 7, 14.007; O, 8, 15.999; F, 9, 18.998; Ne, 10, 20.180;]
+]
 
 [heading3 Computations]
 
-As a first example, consider the M-expression
 
 %%%
-    [sum 11.4 4.5 -7.7]
+      [sum 11.4 4.5 -7.7]
 
 It renders as
 
@@ -49,10 +60,10 @@ It renders as
    [sum 11.4 4.5 -7.7]
 ]
 
-One can aslo specify a precsion:
+One can also specify a precision:
 
 %%%
-   [sum [opt precision:3] 0.02 0.015 -0.009]
+      [sum [opt precision:3] 0.02 0.015 -0.009]
 
 This renders as
 
@@ -66,6 +77,7 @@ This renders as
    [bargraph 1.2, 1.3, 2.4, 3.1, 2.9, 2.2, 1.8, 2.5, 2.7]
 
 [bargraph 1.2, 1.3, 2.4, 3.1, 2.9, 2.2, 1.8, 2.5, 2.7]
+
 
 [heading3 Footnote]
 

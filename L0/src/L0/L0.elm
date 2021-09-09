@@ -232,25 +232,32 @@ image format expr_ =
             Element.el [ Font.size 14 ] (Element.text "Error: bad data for image")
 
 
+getData : MExpression -> Maybe { dict : Dict String String, data : String }
+getData expr_ =
+    case L0.ASTTools.normalize expr_ of
+        MList [ Literal rawData ] ->
+            Just { dict = Dict.empty, data = rawData }
+
+        MList [ Verbatim '`' rawData ] ->
+            Just { dict = Dict.empty, data = rawData }
+
+        MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
+            Just { dict = Utility.keyValueDictFromString options, data = rawData }
+
+        MList [ MElement "opt" (MList [ Literal options ]), Verbatim '`' rawData ] ->
+            Just { dict = Utility.keyValueDictFromString options, data = rawData }
+
+        _ ->
+            Nothing
+
+
 dataTable format expr_ =
-    let
-        info =
-            case L0.ASTTools.normalize expr_ of
-                MList [ Literal rawData ] ->
-                    Just ( Dict.empty, getCSV2 ";" ";;" rawData )
-
-                MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
-                    Just ( Utility.keyValueDictFromString options, getCSV2 ";" ";;" rawData )
-
-                _ ->
-                    Nothing
-    in
-    case info of
+    case getData expr_ of
         Nothing ->
             el [ Font.size 14 ] (text "Invalid data for bar graph")
 
-        Just ( dict, data ) ->
-            renderDataTable dict data
+        Just { dict, data } ->
+            renderDataTable dict (getCSV2 "," ";" data)
 
 
 renderDataTable dict data =
@@ -258,7 +265,7 @@ renderDataTable dict data =
 
 
 renderRow data =
-    row [ spacing 8 ] (List.map (\s -> el [ width (px 100) ] (text s)) data)
+    row [ spacing 8 ] (List.map (\s -> el [ width (px 50) ] (text s)) data)
 
 
 
@@ -393,7 +400,7 @@ getCSV2 fieldSep recordSep data =
 
 indent : Format -> MExpression -> Element msg
 indent format expr =
-    column [ paddingEach { left = 18, right = 0, top = 0, bottom = 0 } ] [ view format expr ]
+    column [ paddingEach { left = 36, right = 0, top = 0, bottom = 0 } ] [ view format expr ]
 
 
 preformatted : Format -> MExpression -> Element msg
