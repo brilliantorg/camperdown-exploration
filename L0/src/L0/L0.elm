@@ -84,6 +84,7 @@ fDict =
         , ( "heading3", \format expr -> heading3 format expr )
         , ( "quote", \format expr -> quote format expr )
         , ( "link", \format expr -> link format expr )
+        , ( "item", \format expr -> item format expr )
 
         --, ( "sum", \format args expr -> Widget.sum args expr )
         , ( "preformatted", \format expr -> preformatted format expr )
@@ -96,6 +97,12 @@ fDict =
         ]
 
 
+item format expr =
+    let
+        itemPadding = Element.paddingEach {top = 8, bottom = 8, left =24, right = 0}
+    in
+    Element.wrappedRow [itemPadding, width (px format.lineWidth), Element.centerY] [el [Font.size 18] (text "•"), view format expr]
+
 quote format expr =
     case expr of
         MList [ Literal str ] ->
@@ -106,7 +113,7 @@ quote format expr =
 
 
 link format expr =
-    case expr of
+    case (L0.ASTTools.normalize expr)  of
         MList [ Literal str ] ->
             case String.words str of
                 [ label, url ] ->
@@ -121,9 +128,15 @@ link format expr =
                         , label = el [ linkColor ] (text url)
                         }
 
+
                 _ ->
                     Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text "Bad data for link")
 
+        MList [ Literal label, Literal url] ->
+            newTabLink []
+                { url = url
+                , label = el [ linkColor ] (text label)
+                }
         _ ->
             Element.el [ Font.size 32, verticalPadding 32 8 ] (Element.text "Bad data for link")
 

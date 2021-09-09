@@ -47,7 +47,7 @@ fromText text =
             Verbatim char str
 
         Syntax.Annotation prefix textList _ _ ->
-            if Loc.value prefix /= "[" then
+            if (not <| List.member (Loc.value prefix) ["[", "\""]) then
                 MProblem "Error: '[' expected"
 
             else
@@ -65,7 +65,9 @@ fromText text =
                     head :: rest ->
                         case head of
                             Syntax.Raw str ->
-                                if Loc.value prefix == "[" then
+                                if Loc.value prefix == "\"" then
+                                   Literal str
+                                else if Loc.value prefix == "[" then
                                     let
                                         firstSpace =
                                             List.head (String.indices " " str) |> Maybe.withDefault 1
@@ -112,8 +114,9 @@ fromText text =
                                             else
                                                 MElement fname (MList (Literal arg :: List.map fromText rest))
 
+
                                 else
-                                    Literal "(I was expecting '[' or '|')"
+                                   Literal "(I was expecting '[' or '\"')"
 
                             _ ->
                                 Literal "(malformed annotation)"

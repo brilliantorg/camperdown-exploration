@@ -81,11 +81,11 @@ init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         doc =
-            Just (Camperdown.Parse.parse L0.Config.config sourceText |> Debug.log "AST")
+            Just (Camperdown.Parse.parse L0.Config.config Docs.sourceText |> Debug.log "AST")
     in
     ( { key = key
       , url = url
-      , contents = sourceText
+      , contents = Docs.sourceText
       , document = doc
       , viewMode = ViewL0
       }
