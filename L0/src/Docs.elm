@@ -6,11 +6,6 @@ sourceText =
 
 
 
-[list [opt title:List, style:numbered] [item L0 is a simple yet [b versatile] markup language that takes inspiration from Lisp. ]
-[item M-expressions can be nested, as in `[blue [i delicate blue] flowers]`, which renders as [blue [i delicate blue] flowers].
-]]
-
-
 [image [opt caption:The L0 Mascot] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
