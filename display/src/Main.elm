@@ -1,33 +1,21 @@
 module Main exposing (main)
 
-{- This is a starter app which presents a text label, text field, and a button.
-   What you enter in the text field is echoed in the label.  When you press the
-   button, the text in the label is reverse.
-   This version uses `mdgriffith/elm-ui` for the view functions.
--}
-
-import ASTTools
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav exposing (Key)
 import Camperdown.Config.Config as Config
 import Camperdown.Parse
 import Camperdown.Parse.Syntax exposing (Document, Label(..), Section)
 import Docs
+import Docs.Pipeline
 import Element exposing (..)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html)
-import Html.Attributes
-import Html.Events
-import Json.Decode as Decode
-import Json.Encode as Encode
 import Markdown
 import Task
 import Url exposing (Url)
-import View.AST
 import View.Campdown
 
 
@@ -47,7 +35,7 @@ type alias Model =
     , document : Maybe Document
     , key : Key
     , url : Url
-    , viewMode : ViewMode
+    , appDoc : AppDoc
     }
 
 
@@ -56,14 +44,12 @@ type Msg
     | CodeChanged String
     | UrlClicked UrlRequest
     | UrlChanged Url
-    | InputText String
-    | ShowAST
-    | ShowCampdown
-    | About
-    | Dummy String
-    | FileRequested
-    | FileSelected File
-    | LoadFileContents String
+    | SetDoc AppDoc
+
+
+type AppDoc
+    = HomeDoc
+    | PipelineDoc
 
 
 type ViewMode
@@ -86,7 +72,7 @@ init flags url key =
       , url = url
       , contents = sourceText
       , document = doc
-      , viewMode = ViewCampdown
+      , appDoc = HomeDoc
       }
     , Cmd.none
     )
@@ -105,16 +91,6 @@ update msg model =
         CodeChanged str ->
             ( loadContent model str, Cmd.none )
 
-        InputText str ->
-            ( { model
-                | contents = str
-
-                --, viewMode = ViewCampdown
-                , document = Just (Camperdown.Parse.parse Config.config str)
-              }
-            , Cmd.none
-            )
-
         UrlClicked urlRequest ->
             case urlRequest of
                 Internal url ->
@@ -128,38 +104,12 @@ update msg model =
         UrlChanged _ ->
             ( model, Cmd.none )
 
-        ShowAST ->
-            ( { model | viewMode = ViewCampdown }, Cmd.none )
-
-        ShowCampdown ->
-            ( { model | viewMode = ViewAST }, Cmd.none )
-
-        About ->
-            ( { model | viewMode = ViewAbout }, Cmd.none )
-
-        Dummy _ ->
-            ( { model | viewMode = ViewAST }, Cmd.none )
-
-        FileRequested ->
-            ( model, Select.file [ "text/txt" ] FileSelected )
-
-        FileSelected file ->
-            ( model, Task.perform LoadFileContents (File.toString file) )
-
-        LoadFileContents contents ->
-            ( { model | contents = contents, document = Just (Camperdown.Parse.parse Config.config contents) }, Cmd.none )
+        SetDoc doc ->
+            ( { model | appDoc = doc }, Cmd.none )
 
 
 
 -- HELPERS
-
-
-requestHyperCard : Cmd Msg
-requestHyperCard =
-    Select.file [ "text/plain" ] FileSelected
-
-
-
 --
 -- VIEW
 --
@@ -184,9 +134,31 @@ mainColumn : Model -> Element Msg
 mainColumn model =
     column mainColumnStyle
         [ column [ spacing 12, paddingXY 0 36, centerX ]
-            [ el [ Font.size 24 ] (text "Campderdown Explorations") ]
-        , viewCampDown model
+            [ el [ Font.size 24 ] (text "Camperdown Explorations!!") ]
+        , case model.appDoc of
+            HomeDoc ->
+                viewCampDown model
+
+            PipelineDoc ->
+                viewMarkdown model
+        , footer model
         ]
+
+
+footer model =
+    row [ paddingXY 8 8, spacing 12, height (px 40), width fill, Background.color (Element.rgb255 20 20 20) ]
+        [ homeButton model.appDoc, pipelineDocButton model.appDoc ]
+
+
+viewMarkdown : Model -> Element msg
+viewMarkdown model =
+    case model.document of
+        Nothing ->
+            Element.none
+
+        Just doc ->
+            column [ centerX, Background.color (Element.rgb 255 250 250), height (px 650), width (px 500), scrollbarY ]
+                [ column [ Font.size 14 ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
 
 
 viewCampDown : Model -> Element msg
@@ -196,8 +168,8 @@ viewCampDown model =
             Element.none
 
         Just doc ->
-            column [ centerX, Background.color (Element.rgb 255 250 250), height (px 700), width (px 500), scrollbarY ]
-                [ column [] (View.Campdown.view ourFormat model.contents doc) ]
+            column [ centerX, Background.color (Element.rgb 255 250 250), height (px 650), width (px 500), scrollbarY ]
+                [ column [ Font.size 14 ] (View.Campdown.view ourFormat model.contents doc) ]
 
 
 ourFormat =
@@ -212,16 +184,6 @@ ourFormat =
 
 
 -- |> column [ height (px 700), width (px 500), scrollbarY ]
-
-
-viewAST : Model -> Element msg
-viewAST model =
-    case model.document of
-        Nothing ->
-            Element.none
-
-        Just doc ->
-            View.AST.view model.contents doc |> column [ height (px 700), width (px 500), scrollbarY ]
 
 
 panelWidth model =
@@ -277,18 +239,6 @@ documentFromString str =
     Camperdown.Parse.parse Config.config str
 
 
-editor model =
-    -- TODO: finish this!
-    -- column [ width fill, height fill, Background.color (rgb255 255 212 220), padding 40 ] [ text "EDITOR" ]
-    Input.multiline [ width (px 500), height (px 700), Background.color (rgb255 255 212 220), padding 40, Font.size 14 ]
-        { onChange = InputText
-        , text = model.contents
-        , placeholder = Nothing
-        , label = Input.labelHidden "Editor"
-        , spellcheck = False
-        }
-
-
 format =
     { imageHeight = 500
     , lineWidth = 600
@@ -303,67 +253,28 @@ title str =
     row [ centerX, Font.bold, fontGray 0.9 ] [ text str ]
 
 
-inputText : Model -> Element Msg
-inputText model =
-    Input.text []
-        { onChange = InputText
-        , text = model.contents
-        , placeholder = Nothing
-        , label = Input.labelAbove [ fontGray 0.9 ] <| el [] (text "Input")
+pipelineDocButton : AppDoc -> Element Msg
+pipelineDocButton appDoc =
+    Input.button (buttonStyle ++ [ bgColor appDoc PipelineDoc, height (px 30) ])
+        { onPress = Just (SetDoc PipelineDoc)
+        , label = el [ centerX, centerY, bgColor appDoc PipelineDoc ] (text "Pipeline")
         }
 
 
-toggleViewButton : ViewMode -> Element Msg
-toggleViewButton viewMode =
-    case viewMode of
-        ViewAST ->
-            row []
-                [ Input.button buttonStyle
-                    { onPress = Just ShowAST
-                    , label = el [ centerX, centerY ] (text "AST    ")
-                    }
-                ]
-
-        ViewCampdown ->
-            row []
-                [ Input.button buttonStyle
-                    { onPress = Just ShowCampdown
-                    , label = el [ centerX, centerY ] (text "Campdown")
-                    }
-                ]
-
-        ViewAbout ->
-            Element.none
+homeButton : AppDoc -> Element Msg
+homeButton appDoc =
+    Input.button (buttonStyle ++ [ bgColor appDoc HomeDoc, height (px 30) ])
+        { onPress = Just (SetDoc HomeDoc)
+        , label = el [ centerX, centerY, bgColor appDoc HomeDoc ] (text "Home")
+        }
 
 
-requestFileButton : Element Msg
-requestFileButton =
-    row []
-        [ Input.button buttonStyle
-            { onPress = Just FileRequested
-            , label = el [ centerX, centerY ] (text "Open file")
-            }
-        ]
+bgColor appDoc1 appDoc2 =
+    if appDoc1 == appDoc2 then
+        Background.color (Element.rgb255 200 40 40)
 
-
-aboutButton : ViewMode -> Element Msg
-aboutButton viewMode =
-    case viewMode of
-        ViewAbout ->
-            row []
-                [ Input.button buttonStyle
-                    { onPress = Just ShowCampdown
-                    , label = el [ centerX, centerY ] (text "Campdown")
-                    }
-                ]
-
-        _ ->
-            row []
-                [ Input.button buttonStyle
-                    { onPress = Just About
-                    , label = el [ centerX, centerY ] (text "About")
-                    }
-                ]
+    else
+        Background.color (Element.rgb255 80 80 100)
 
 
 
@@ -386,7 +297,7 @@ buttonStyle =
     [ Background.color (Element.rgb 0.5 0.5 0.5)
     , Font.color (rgb255 255 255 255)
     , Font.size 14
-    , paddingXY 15 8
+    , paddingXY 15 0
     ]
 
 
