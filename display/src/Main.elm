@@ -176,18 +176,16 @@ bgGray g =
 view : Model -> Browser.Document Msg
 view model =
     { title = "Campdown Demo"
-    , body = [ Element.layout [ bgGray 0.2, centerX, centerY ] (mainColumn model) ]
+    , body = [ Element.layout [ bgGray 0.2 ] (mainColumn model) ]
     }
 
 
 mainColumn : Model -> Element Msg
 mainColumn model =
     column mainColumnStyle
-        [ column [ spacing 36, width (px 800), height (px 800), scrollbarY ]
-            [ row [ spacing 12, centerX, centerY ]
-                [ el [ Font.size 24 ] (text "Campderdown Explorations") ]
-            , viewCampDown model
-            ]
+        [ column [ spacing 12, paddingXY 0 36, centerX ]
+            [ el [ Font.size 24 ] (text "Campderdown Explorations") ]
+        , viewCampDown model
         ]
 
 
@@ -198,8 +196,8 @@ viewCampDown model =
             Element.none
 
         Just doc ->
-            column [ height (px 700), width (px 500), scrollbarY ]
-                (View.Campdown.view ourFormat model.contents doc)
+            column [ centerX, Background.color (Element.rgb 255 250 250), height (px 700), width (px 500), scrollbarY ]
+                [ column [] (View.Campdown.view ourFormat model.contents doc) ]
 
 
 ourFormat =
@@ -379,7 +377,7 @@ mainColumnStyle =
     , centerY
     , bgGray 1.0
     , paddingXY 20 0
-    , width (px 800)
+    , width (px 600)
     , height (px 800)
     ]
 
