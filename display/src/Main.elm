@@ -134,7 +134,7 @@ mainColumn : Model -> Element Msg
 mainColumn model =
     column mainColumnStyle
         [ column [ spacing 12, paddingXY 0 36, centerX ]
-            [ el [ Font.size 24 ] (text "Camperdown Explorations!!") ]
+            [ el [ Font.size 24 ] (text "Camperdown Explorations") ]
         , case model.appDoc of
             HomeDoc ->
                 viewCampDown model
@@ -158,7 +158,7 @@ viewMarkdown model =
 
         Just doc ->
             column [ centerX, Background.color (Element.rgb 255 250 250), height (px 650), width (px 500), scrollbarY ]
-                [ column [ Font.size 14 ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
+                [ column [ Font.size 14 f ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
 
 
 viewCampDown : Model -> Element msg
