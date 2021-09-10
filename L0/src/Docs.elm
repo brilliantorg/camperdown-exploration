@@ -174,7 +174,7 @@ where
 
 Once this is done, one can work entirely within the MExpression universe.
 
-[heading3 Footnote]
+[heading2 Footnote]
 
 For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
 
