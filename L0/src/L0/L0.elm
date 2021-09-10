@@ -98,7 +98,8 @@ item format expr =
         itemPadding =
             Element.paddingEach { top = 8, bottom = 8, left = 24, right = 0 }
     in
-    Element.wrappedRow [ itemPadding, width (px format.lineWidth), Element.centerY ] [ el [ Font.size 18 ] (text "•"), view format expr ]
+    -- Element.wrappedRow [ itemPadding, width (px format.lineWidth), Element.centerY ] [ el [ Font.size 18 ] (text "•"), view format expr ]
+    Element.wrappedRow [ width (px format.lineWidth) ] [ view format expr ]
 
 
 quote format expr =
