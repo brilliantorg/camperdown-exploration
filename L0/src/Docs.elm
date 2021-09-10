@@ -177,6 +177,12 @@ where
 
 Once this is done, one can work entirely within the MExpression universe.
 
+
+[heading3 Table of Contents]
+
+The table of contents is constructed from the parsed document, viwed as a list of M-expressions.  This list is filtered, retainlng on MElements whose name includes [quote heading].  The table of contents is constructued from this list.
+
+
 [heading2 Footnote]
 
 For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
