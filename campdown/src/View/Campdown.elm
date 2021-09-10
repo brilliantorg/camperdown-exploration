@@ -246,7 +246,7 @@ viewCommand format ( mLocStr, config ) =
                     E.row [] (List.map (viewValue format [ Font.bold, Font.size 18, E.paddingEach { emptyPadding | top = 18, bottom = 8 } ]) locValList)
 
                 "list" ->
-                    E.row [ E.paddingEach { emptyPadding | top = 24 } ] []
+                    E.row [ E.paddingEach { emptyPadding | top = 24 }, width (px 400) ] []
 
                 "quote" ->
                     E.row [ E.paddingEach { emptyPadding | top = 24 } ] []
