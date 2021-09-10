@@ -180,7 +180,7 @@ Once this is done, one can work entirely within the MExpression universe.
 
 [heading3 Table of Contents]
 
-The table of contents is constructed from the parsed document, viwed as a list of M-expressions.  This list is filtered, retainlng on MElements whose name includes [quote heading].  The table of contents is constructued from this list.
+The table of contents is constructed from the parsed document, viewed as a list of M-expressions.  This list is filtered, retaining on MElements whose name includes [quote heading].  The table of contents is constructed from this list.
 
 
 [heading2 Footnote]
