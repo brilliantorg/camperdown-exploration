@@ -117,18 +117,10 @@ viewElement source elem =
         Syntax.Command { command, child } ->
             let
                 ( mLocStr, config ) =
-                    command |> Debug.log "command"
+                    command
 
                 color =
                     rgb255 200 200 200
-
-                -- TODO: finish this!
-                --case command of
-                --    (Syntax.Bang, _ ) ->
-                --        rgb255 200 200 200
-                --
-                --    ( Syntax.Huh, _ ) ->
-                --        rgb255 225 225 225
             in
             row [ panelWidth ]
                 [ el [ height fill, width (px 1), Background.color (rgb255 50 50 50) ] none
@@ -257,10 +249,6 @@ viewText color style elem =
             List.map (\word -> el (styleAttributes style) (text word)) (String.split " " str |> List.filter (\s -> String.trim s /= ""))
 
         Syntax.Verbatim ch ( _, str ) ->
-            let
-                _ =
-                    Debug.log "Verbatim" str
-            in
             [ row [ monospace, height fill, Font.size 15, Background.color (light RandomColor.second) ]
                 [ el [ height fill, width (px 1), Background.color (dark RandomColor.second) ] none
                 , el [ height fill, Font.color (dark RandomColor.second) ] (text <| String.fromChar ch)

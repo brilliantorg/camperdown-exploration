@@ -3,6 +3,10 @@ module Docs exposing (sourceText)
 
 sourceText =
     """
+
+
+
+
 [image [opt caption:The L0 Mascot] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
 
 [heading1 The L0 Markup Language (Draft)]
@@ -26,9 +30,86 @@ The version of L0 that you see here is implemented in [link Elm https://elm-lang
 
 [item [link "This L0 Demo" https://cocky-nightingale-a14dab.netlify.app/]]
 
+
+[heading2 Additions]
+
+Let us discuss the additions made to pure L0
+
+[heading3 Block verbatim]
+
+With block verbatim you write can multi-line code or anything else that you wish to be rendered verbatim. A verbatim block consists of the string `%%%` followed by text which [i must] be indendented
+
+%%%
+   %%%
+     This is verbatim text
+
+          As
+       you
+
+The verbatim block is rendered like this:
+
+%%%
+  This is verbatim text
+
+       As
+    you
+
+    can see, white space is preserved.
+
+
+
+
+[heading3 Bulleted lists]
+
+Bulleted lists are constructed like this
+
+%%%
+    ! bulleted
+
+       [item Do this.]
+
+       [item Do that.]
+
+       [item And then do the other thing.]
+
+They render as shown below.
+
+
+! bulleted >>
+
+   [item Do this.]
+
+   [item Do that.]
+
+   [item And then do the other thing.]
+
+The [quote bang] symbol [quote !] announces a Campedown command.  The bang symbol is followed by a space, then the name of the command, then the chevron [quote >>>].  Followng the chevron are the children of the command, which are orginary M-expressions.  This construction allows one to have multi-paragraph constructions, something that is not possible in pure L0.  This is because an M-expressiion may not contain empty lines, or for that matter, lines with whitespace only.
+
+[heading3 Numbered lists]
+
+Numbered lists are much like bulleted lists:
+
+%%%
+    ! numbered
+
+       [item Do this.]
+
+       [item Do that.]
+
+       [item And then do the other thing.]
+
+They render as shown below.
+
+
+! numbered >>
+
+   [item Do this.]
+
+   [item Do that.]
+
+   [item And then do the other thing.]
+
 [heading2 Widgets]
-
-
 
 In L0, one can easily implement [i widgets] that display data, carry out computations, or produce graphical output.
 

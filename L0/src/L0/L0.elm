@@ -20,10 +20,6 @@ type alias Format =
 
 view : Format -> MExpression -> Element msg
 view format mexpr =
-    let
-        _ =
-            Debug.log "view, mexpr" mexpr
-    in
     case mexpr of
         Literal str ->
             text str
@@ -57,7 +53,7 @@ viewElement : Format -> String -> MExpression -> Element msg
 viewElement format fname mexpr =
     case Dict.get fname fDict of
         Nothing ->
-            text <| "Function " ++ fname ++ " not found, args " ++ Debug.toString mexpr
+            text <| "Function " ++ fname ++ " not found"
 
         Just f ->
             f format mexpr
@@ -88,8 +84,9 @@ fDict =
 
         --, ( "spreadsheet", \format args expr -> spreadsheet format args expr )
         --, ( "row", \format args expr -> Element.none )
-        , ( "list", \format expr -> list format expr )
-        , ( "item", \format expr -> list format expr )
+        , ( "numbered", \format expr -> numbered format expr )
+        , ( "bulleted", \format expr -> bulleted format expr )
+        , ( "item", \format expr -> item format expr )
         ]
 
 
@@ -219,33 +216,59 @@ renderRow data =
 --            el [ Font.color redColor ] (text "Malformed list")
 
 
-list format expr =
-    let
-        _ =
-            Debug.log "EXPR!" (L0.ASTTools.normalize expr)
-    in
+numbered format expr =
     case L0.ASTTools.normalize expr of
-        MList ((MElement "opt" (MList [ Literal options ])) :: items) ->
-            renderList format (Utility.keyValueDictFromString options) items
-
         MList items ->
-            renderList format Dict.empty items
+            renderNumberedList format items
 
         _ ->
             unimplemented "Error: " "Bad data for list"
 
 
-renderList format dict items =
+renderNumberedList format items =
     column []
-        [ elementTitle dict
-        , column [ spacing 4, listPadding ]
-            (List.indexedMap (\k item_ -> paragraph [] [ getPrefixSymbol k dict, view format item_ ]) (filterOutBlankItems items))
+        [ column [ spacing 18, listPadding ]
+            (List.indexedMap (\k item_ -> renderItem k format item_) (filterOutBlankItems items))
         ]
+
+
+numberedPrefix k =
+    el [ Font.size 14, alignTop ] (text (String.fromInt (k + 1) ++ ". "))
+
+
+renderItem : Int -> Format -> MExpression -> Element msg
+renderItem k format expr =
+    Element.row [ width (px format.lineWidth) ] [ numberedPrefix k, paragraph [ width (px (format.lineWidth - 50)) ] [ view format expr ] ]
+
+
+bulleted format expr =
+    case L0.ASTTools.normalize expr of
+        MList items ->
+            renderBulletedList format items
+
+        _ ->
+            unimplemented "Error: " "Bad data for list"
+
+
+renderBulletedList format items =
+    column []
+        [ column [ spacing 18, listPadding ]
+            (List.map (renderBulletedItem format) (filterOutBlankItems items))
+        ]
+
+
+bullet =
+    el [ Font.size 14, alignTop ] (text "•")
+
+
+renderBulletedItem : Format -> MExpression -> Element msg
+renderBulletedItem format expr =
+    Element.row [ width (px format.lineWidth), spacing 8 ] [ bullet, paragraph [ width (px (format.lineWidth - 50)) ] [ view format expr ] ]
 
 
 item : Format -> MExpression -> Element msg
 item format expr =
-    Element.paragraph [] [ view format expr ]
+    Element.paragraph [ width (px format.lineWidth) ] [ view format expr ]
 
 
 
@@ -405,7 +428,7 @@ indentPadding =
 
 
 listPadding =
-    paddingEach { left = 12, right = 0, top = 8, bottom = 0 }
+    paddingEach { left = 18, right = 0, top = 0, bottom = 0 }
 
 
 verticalPadding top bottom =

@@ -102,13 +102,6 @@ fromText text =
                 MProblem "Error: '[' expected"
 
             else
-                let
-                    _ =
-                        Debug.log "prefix" prefix
-
-                    _ =
-                        Debug.log "textList" textList
-                in
                 case textList of
                     [] ->
                         Literal "(invalid annotation)"

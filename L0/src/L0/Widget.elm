@@ -59,7 +59,7 @@ bargraph format expr =
         info =
             case L0.ASTTools.normalize expr of
                 MList [ Literal rawData ] ->
-                    Just ( Dict.empty, Utility.stringToListOfFloat (Debug.log "RAW DATA" rawData) )
+                    Just ( Dict.empty, Utility.stringToListOfFloat rawData )
 
                 MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
                     Just ( Utility.keyValueDictFromString options, Utility.stringToListOfFloat rawData )
@@ -77,9 +77,6 @@ bargraph format expr =
 
 renderBarGraph dict data =
     let
-        _ =
-            Debug.log "DATA" data
-
         dataMax =
             List.maximum data |> Maybe.withDefault 0
 

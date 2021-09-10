@@ -6,7 +6,6 @@ module Main exposing (main)
    This version uses `mdgriffith/elm-ui` for the view functions.
 -}
 
-import Docs
 import ASTTools
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav exposing (Key)
@@ -81,7 +80,7 @@ init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         doc =
-            Just (Camperdown.Parse.parse Config.config sourceText |> Debug.log "AST")
+            Just (Camperdown.Parse.parse Config.config sourceText)
     in
     ( { key = key
       , url = url
@@ -413,6 +412,5 @@ buttonStyle =
 -- DATA
 
 
-
-sourceText = Docs.sample
-
+sourceText =
+    Docs.sample
