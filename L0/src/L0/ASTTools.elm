@@ -1,5 +1,6 @@
-module L0.ASTTools exposing (normalize)
+module L0.ASTTools exposing (flatten, normalize)
 
+import Camperdown.Parse.Syntax as Syntax
 import L0.MExpression exposing (MExpression(..))
 
 
@@ -48,3 +49,13 @@ notEmptyRaw mExpr =
 
         _ ->
             True
+
+
+flatten : Syntax.Document -> List Syntax.Element
+flatten { prelude, sections } =
+    prelude ++ (List.map flattenSection sections |> List.concat)
+
+
+flattenSection : Syntax.Section -> List Syntax.Element
+flattenSection section =
+    section.contents

@@ -1,4 +1,4 @@
-module L0.MExpression exposing (MExpression(..), fromElement)
+module L0.MExpression exposing (MExpression(..), filter, fromElement)
 
 import Camperdown.Loc as Loc
 import Camperdown.Parse.Syntax as Syntax
@@ -11,6 +11,38 @@ type MExpression
     | MElement String MExpression
     | MList (List MExpression)
     | MProblem String
+
+
+filter : String -> List MExpression -> List MExpression
+filter key expr =
+    List.map (filterExpression key) expr |> List.concat
+
+
+filterExpression : String -> MExpression -> List MExpression
+filterExpression key expr =
+    case expr of
+        (MElement _ _) as expr2 ->
+            if match key expr2 then
+                [ expr2 ]
+
+            else
+                []
+
+        MList list ->
+            List.filter (\expr2 -> match key expr2) list
+
+        _ ->
+            []
+
+
+match : String -> MExpression -> Bool
+match key expr =
+    case expr of
+        MElement name _ ->
+            String.contains key name
+
+        _ ->
+            False
 
 
 {-|
@@ -36,30 +68,6 @@ fromElement element =
 
         Syntax.Problem { problem } ->
             Literal ("Problem: " ++ problem)
-
-
-
-{-
-   Camperdown.Parse.Syntax
-   Placeholder
-
-   type alias Command =
-       ( Maybe (Loc String), Config )
-   Placeholder
-
-   type alias Config =
-       ( List (Loc Value), List (Loc Parameter) )
-   Placeholder
-
-   type Divert
-       = Nested (List Element)
-       | Immediate (List Element)
-       | Reference (Loc String)
-
-
-
-
--}
 
 
 children : Maybe Syntax.Divert -> MExpression

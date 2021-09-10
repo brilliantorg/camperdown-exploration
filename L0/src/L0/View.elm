@@ -4,13 +4,44 @@ import Camperdown.Parse.Syntax as Syntax
 import Element exposing (..)
 import Element.Font as Font
 import Html.Attributes
+import L0.ASTTools as ASTTools
 import L0.L0 as ViewMExpression exposing (Format)
-import L0.MExpression as MExpression exposing (MExpression)
+import L0.MExpression as MExpression exposing (MExpression(..))
 
 
 view : Format -> String -> Syntax.Document -> List (Element.Element msg)
-view format _ { prelude, sections } =
-    viewElements format prelude :: List.map (viewSection format) sections
+view format _ ({ prelude, sections } as doc) =
+    tableOfContents doc :: viewElements format prelude :: List.map (viewSection format) sections
+
+
+viewHeadingInTOC : MExpression -> Element.Element msg
+viewHeadingInTOC expr =
+    case expr of
+        MElement "heading1" (MList [ Literal heading ]) ->
+            el [ Font.size 12 ] (text heading)
+
+        MElement "heading2" (MList [ Literal heading ]) ->
+            el [ Font.size 12, paddingXY 18 0 ] (text heading)
+
+        MElement "heading3" (MList [ Literal heading ]) ->
+            el [ Font.size 12, paddingXY 36 0 ] (text heading)
+
+        _ ->
+            Element.none
+
+
+tableOfContents : Syntax.Document -> Element.Element msg
+tableOfContents doc =
+    let
+        headings =
+            doc
+                |> ASTTools.flatten
+                |> List.map MExpression.fromElement
+                |> MExpression.filter "heading"
+                |> Debug.log "headings"
+    in
+    Element.column [ spacing 8, paddingEach { left = 0, right = 0, top = 0, bottom = 36 } ]
+        (el [ Font.bold ] (text "Table of Contents") :: List.map viewHeadingInTOC (List.drop 1 headings))
 
 
 viewSection : Format -> Syntax.Section -> Element.Element msg

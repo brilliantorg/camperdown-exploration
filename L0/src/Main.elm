@@ -6,10 +6,8 @@ module Main exposing (main)
    This version uses `mdgriffith/elm-ui` for the view functions.
 -}
 
-import ASTTools
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav exposing (Key)
-import Camperdown.Config as Config
 import Camperdown.Parse
 import Camperdown.Parse.Syntax exposing (Document, Label(..), Section)
 import Docs
@@ -19,14 +17,8 @@ import Element.Font as Font
 import Element.Input as Input
 import File exposing (File)
 import File.Select as Select
-import Html exposing (Html)
-import Html.Attributes
-import Html.Events
-import Json.Decode as Decode
-import Json.Encode as Encode
 import L0.Config
 import L0.View
-import Markdown
 import Task
 import Url exposing (Url)
 import View.AST
