@@ -63,6 +63,10 @@ viewElement format fname mexpr =
             f format mexpr
 
 
+
+-- FUNCTION DICTIONARY
+
+
 fDict : Dict String (Format -> MExpression -> Element msg)
 fDict =
     Dict.fromList
@@ -162,93 +166,33 @@ heading3 format expr =
             Element.el [ Font.size 18, verticalPadding 36 8 ] (Element.text "Bad data for heading")
 
 
-verticalPadding top bottom =
-    Element.paddingEach { left = 0, right = 0, top = top, bottom = bottom }
-
-
 image format expr_ =
     let
         w =
             500
     in
-    case L0.ASTTools.normalize expr_ of
-        MList [ MElement "opt" (MList [ Literal options ]), Literal url_ ] ->
-            let
-                dict =
-                    Utility.keyValueDictFromString options
-
-                caption =
-                    Dict.get "caption" dict |> Maybe.withDefault ""
-
-                w2 =
-                    case Dict.get "width" dict of
-                        Nothing ->
-                            w
-
-                        Just w_ ->
-                            String.toInt w_ |> Maybe.withDefault w
-            in
-            column [ spacing 8, Element.width (px w2) ]
-                [ Element.image [ Element.width (px w2) ]
-                    { src = url_, description = "image" }
-                , el [ Font.size 12 ] (Element.text caption)
-                ]
-
-        MList [ MElement "opt" (MList [ Literal options ]), Verbatim '`' url_ ] ->
-            let
-                dict =
-                    Utility.keyValueDictFromString options
-
-                caption =
-                    Dict.get "caption" dict |> Maybe.withDefault ""
-
-                w2 =
-                    case Dict.get "width" dict of
-                        Nothing ->
-                            w
-
-                        Just w_ ->
-                            String.toInt w_ |> Maybe.withDefault w
-            in
-            column [ spacing 8, Element.width (px w2) ]
-                [ Element.image [ Element.width (px w2) ]
-                    { src = url_, description = "image" }
-                , el [ Font.size 12 ] (Element.text caption)
-                ]
-
-        MList [ Literal url_ ] ->
-            column [ spacing 8, Element.width (px w) ]
-                [ Element.image [ Element.width (px w) ]
-                    { src = url_, description = "image" }
-                ]
-
-        MList [ Verbatim '`' url_ ] ->
-            column [ spacing 8, Element.width (px w) ]
-                [ Element.image [ Element.width (px w) ]
-                    { src = url_, description = "image" }
-                ]
-
-        _ ->
+    case getData expr_ of
+        Nothing ->
             Element.el [ Font.size 14 ] (Element.text "Error: bad data for image")
 
+        Just { dict, data } ->
+            let
+                caption =
+                    Dict.get "caption" dict |> Maybe.withDefault ""
 
-getData : MExpression -> Maybe { dict : Dict String String, data : String }
-getData expr_ =
-    case L0.ASTTools.normalize expr_ of
-        MList [ Literal rawData ] ->
-            Just { dict = Dict.empty, data = rawData }
+                w2 =
+                    case Dict.get "width" dict of
+                        Nothing ->
+                            w
 
-        MList [ Verbatim '`' rawData ] ->
-            Just { dict = Dict.empty, data = rawData }
-
-        MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
-            Just { dict = Utility.keyValueDictFromString options, data = rawData }
-
-        MList [ MElement "opt" (MList [ Literal options ]), Verbatim '`' rawData ] ->
-            Just { dict = Utility.keyValueDictFromString options, data = rawData }
-
-        _ ->
-            Nothing
+                        Just w_ ->
+                            String.toInt w_ |> Maybe.withDefault w
+            in
+            column [ spacing 8, Element.width (px w2) ]
+                [ Element.image [ Element.width (px w2) ]
+                    { src = data, description = "image" }
+                , el [ Font.size 12 ] (Element.text caption)
+                ]
 
 
 dataTable format expr_ =
@@ -257,7 +201,7 @@ dataTable format expr_ =
             el [ Font.size 14 ] (text "Invalid data for bar graph")
 
         Just { dict, data } ->
-            renderDataTable dict (getCSV2 "," ";" data)
+            renderDataTable dict (getCSV "," ";" data)
 
 
 renderDataTable dict data =
@@ -269,15 +213,16 @@ renderRow data =
 
 
 
---list format args_ body =
---    let
---        dict =
---            Utility.keyValueDict args_
---    in
---    case body of
---        MList list_ ->
+--list format expr =
+--    case getData expr of
+--        Nothing ->
+--            Element.el [ Font.size 14 ] (Element.text "Error: bad data for list")
+--
+--        Just { dict, data } ->
 --            column [ spacing 4, listPadding ]
---                (elementTitle args_ :: List.indexedMap (\k item_ -> renderListItem (getPrefixSymbol k dict) format item_) (filterOutBlankItems list_))
+--                (elementTitle dict
+--                    :: List.indexedMap (\k item_ -> renderListItem (getPrefixSymbol k dict) format item_) (filterOutBlankItems list_)
+--                )
 --
 --        _ ->
 --            el [ Font.color redColor ] (text "Malformed list")
@@ -334,15 +279,8 @@ getPrefixSymbol k dict =
 --            Element.none
 
 
-elementTitle args_ =
-    let
-        dict =
-            Utility.keyValueDict args_
-
-        title =
-            Dict.get "title" dict
-    in
-    case title of
+elementTitle dict =
+    case Dict.get "title" dict of
         Nothing ->
             Element.none
 
@@ -369,28 +307,11 @@ elementTitle args_ =
 --            row [ spacing 10 ] (List.map renderItem items)
 --    in
 --    column [ spacing 8, indentPadding ] (List.map renderRow spreadsheet2)
+--
 
 
-getCSV : String -> String -> MExpression -> List (List String)
-getCSV fieldSep recordSep element =
-    case element of
-        MList list_ ->
-            case List.map extractText list_ of
-                data ->
-                    data
-                        |> Maybe.Extra.values
-                        |> String.join ""
-                        |> String.split recordSep
-                        |> List.filter (\line -> line /= "")
-                        |> List.map (String.split fieldSep)
-                        |> List.map (List.map String.trim)
-
-        _ ->
-            [ [] ]
-
-
-getCSV2 : String -> String -> String -> List (List String)
-getCSV2 fieldSep recordSep data =
+getCSV : String -> String -> String -> List (List String)
+getCSV fieldSep recordSep data =
     data
         |> String.split recordSep
         |> List.filter (\line -> line /= "")
@@ -449,8 +370,31 @@ listPadding =
     paddingEach { left = 18, right = 0, top = 8, bottom = 0 }
 
 
+verticalPadding top bottom =
+    Element.paddingEach { left = 0, right = 0, top = top, bottom = bottom }
+
+
 
 -- HELPERS
+
+
+getData : MExpression -> Maybe { dict : Dict String String, data : String }
+getData expr_ =
+    case L0.ASTTools.normalize expr_ of
+        MList [ Literal rawData ] ->
+            Just { dict = Dict.empty, data = rawData }
+
+        MList [ Verbatim '`' rawData ] ->
+            Just { dict = Dict.empty, data = rawData }
+
+        MList [ MElement "opt" (MList [ Literal options ]), Literal rawData ] ->
+            Just { dict = Utility.keyValueDictFromString options, data = rawData }
+
+        MList [ MElement "opt" (MList [ Literal options ]), Verbatim '`' rawData ] ->
+            Just { dict = Utility.keyValueDictFromString options, data = rawData }
+
+        _ ->
+            Nothing
 
 
 extractText : MExpression -> Maybe String
