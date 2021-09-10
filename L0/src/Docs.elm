@@ -160,7 +160,10 @@ This renders as
 
 [heading2 Technical Notes]
 
-While the Camperdown parser was not designed with a markup language like L0 in mind, it is easy to use it as an L0 parser.  The first step is to modify the standard configuration for the parser so that annotationso of the form `[ ... whatever ...]` are not required to have an immediately following command, as in the form  `[ ... whatever ...](command)`.
+While the Camperdown parser was not designed with a markup language like L0 in mind, it is easy to use it as an L0 parser.
+The first step is to modify the standard configuration for the parser so that annotations of
+the form `[ ... whatever ...]` are not required to have an immediately following command,
+as in the form  `[ ... whatever ...](command)`.
 
 %%%
    elementToMExpression : Syntax.Element -> MExpression
