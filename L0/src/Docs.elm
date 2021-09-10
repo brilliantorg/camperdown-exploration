@@ -6,7 +6,9 @@ sourceText =
 
 
 
-
+[list [opt title:List, style:numbered] [item L0 is a simple yet [b versatile] markup language that takes inspiration from Lisp. ]
+[item M-expressions can be nested, as in `[blue [i delicate blue] flowers]`, which renders as [blue [i delicate blue] flowers].
+]]
 
 
 [image [opt caption:The L0 Mascot] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
@@ -78,6 +80,25 @@ This renders as
 
 [bargraph 1.2, 1.3, 2.4, 3.1, 2.9, 2.2, 1.8, 2.5, 2.7]
 
+
+[heading2 Technical Notes]
+
+While the Camperdown parser was not designed with a markup language like L0 in mind, it is easy to use it as an L0 parser.  The first step is to modify the standard configuration for the parser so that annotationso of the form `[ ... whatever ...]` are not required to have an immediately following command, as in the form  `[ ... whatever ...](command)`.
+
+%%%
+   elementToMExpression : Syntax.Element -> MExpression
+
+where
+
+%%%
+    type MExpression
+        = Literal String
+        | Verbatim Char String
+        | MElement String MExpression
+        | MList (List MExpression)
+        | MProblem String
+
+Once this is done, one can work entirely within the MExpression universe.
 
 [heading3 Footnote]
 

@@ -43,7 +43,7 @@ view format mexpr =
             viewElement format fname mexpr2
 
         MList list_ ->
-            paragraph [ width fill ] (List.map (view format) list_)
+            paragraph [] (List.map (view format) list_)
 
         MProblem problem ->
             text ("Problem: " ++ problem)
@@ -80,7 +80,6 @@ fDict =
         , ( "heading3", \format expr -> heading3 format expr )
         , ( "quote", \format expr -> quote format expr )
         , ( "link", \format expr -> link format expr )
-        , ( "item", \format expr -> item format expr )
         , ( "sum", \format expr -> Widget.sum expr )
         , ( "preformatted", \format expr -> preformatted format expr )
         , ( "indent", \format expr -> indent format expr )
@@ -89,17 +88,9 @@ fDict =
 
         --, ( "spreadsheet", \format args expr -> spreadsheet format args expr )
         --, ( "row", \format args expr -> Element.none )
-        --, ( "list", \format args expr -> list format args expr )
+        , ( "list", \format expr -> list format expr )
+        , ( "item", \format expr -> list format expr )
         ]
-
-
-item format expr =
-    let
-        itemPadding =
-            Element.paddingEach { top = 8, bottom = 8, left = 24, right = 0 }
-    in
-    -- Element.wrappedRow [ itemPadding, width (px format.lineWidth), Element.centerY ] [ el [ Font.size 18 ] (text "•"), view format expr ]
-    Element.wrappedRow [ width (px format.lineWidth) ] [ view format expr ]
 
 
 quote format expr =
@@ -214,6 +205,51 @@ renderRow data =
 
 
 
+--list format args_ body =
+--    let
+--        dict =
+--            Utility.keyValueDict args_
+--    in
+--    case body of
+--        MList list_ ->
+--            column [ spacing 4, listPadding ]
+--                (elementTitle args_ :: List.indexedMap (\k item_ -> renderListItem (getPrefixSymbol k dict) format item_) (filterOutBlankItems list_))
+--
+--        _ ->
+--            el [ Font.color redColor ] (text "Malformed list")
+
+
+list format expr =
+    let
+        _ =
+            Debug.log "EXPR!" (L0.ASTTools.normalize expr)
+    in
+    case L0.ASTTools.normalize expr of
+        MList ((MElement "opt" (MList [ Literal options ])) :: items) ->
+            renderList format (Utility.keyValueDictFromString options) items
+
+        MList items ->
+            renderList format Dict.empty items
+
+        _ ->
+            unimplemented "Error: " "Bad data for list"
+
+
+renderList format dict items =
+    column []
+        [ elementTitle dict
+        , column [ spacing 4, listPadding ]
+            (List.indexedMap (\k item_ -> paragraph [] [ getPrefixSymbol k dict, view format item_ ]) (filterOutBlankItems items))
+        ]
+
+
+item : Format -> MExpression -> Element msg
+item format expr =
+    Element.paragraph [] [ view format expr ]
+
+
+
+--(elementTitle dict :: List.indexedMap (\k item_ -> item format item_) (filterOutBlankItems items))
 --list format expr =
 --    case getData expr of
 --        Nothing ->
@@ -244,13 +280,14 @@ isBlankItem el =
             False
 
 
+getPrefixSymbol : Int -> Dict String String -> Element msg
 getPrefixSymbol k dict =
-    case Dict.get "s" dict of
+    case Dict.get "style" dict of
         Just "numbered" ->
             el [ Font.size 12, alignTop, moveDown 2.2 ] (text (String.fromInt (k + 1) ++ "."))
 
         Nothing ->
-            el [ Font.size 16 ] (text "•")
+            Element.none
 
         Just "bullet" ->
             el [ Font.size 16 ] (text "•")
@@ -259,7 +296,7 @@ getPrefixSymbol k dict =
             Element.none
 
         Just str ->
-            el [ Font.size 16 ] (text str)
+            Element.none
 
 
 
@@ -286,7 +323,7 @@ elementTitle dict =
             Element.none
 
         Just title_ ->
-            el [ Font.size titleSize ] (text title_)
+            el [ Font.bold, Font.size titleSize ] (text title_)
 
 
 
@@ -368,7 +405,7 @@ indentPadding =
 
 
 listPadding =
-    paddingEach { left = 18, right = 0, top = 8, bottom = 0 }
+    paddingEach { left = 12, right = 0, top = 8, bottom = 0 }
 
 
 verticalPadding top bottom =

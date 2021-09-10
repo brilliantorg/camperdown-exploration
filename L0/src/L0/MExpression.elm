@@ -13,6 +13,12 @@ type MExpression
     | MProblem String
 
 
+{-|
+
+    MExpression.fromElement maps values of type Syntax.Element
+    to values of type MExpression
+
+-}
 fromElement : Syntax.Element -> MExpression
 fromElement element =
     case element of
@@ -25,11 +31,56 @@ fromElement element =
         Syntax.Item _ ->
             Literal "item: not implemented"
 
-        Syntax.Command _ ->
-            Literal "command: not implemented"
+        Syntax.Command commandData ->
+            MElement (commandName commandData.command) (children commandData.child)
 
         Syntax.Problem { problem } ->
             Literal ("Problem: " ++ problem)
+
+
+
+{-
+   Camperdown.Parse.Syntax
+   Placeholder
+
+   type alias Command =
+       ( Maybe (Loc String), Config )
+   Placeholder
+
+   type alias Config =
+       ( List (Loc Value), List (Loc Parameter) )
+   Placeholder
+
+   type Divert
+       = Nested (List Element)
+       | Immediate (List Element)
+       | Reference (Loc String)
+
+
+
+
+-}
+
+
+children : Maybe Syntax.Divert -> MExpression
+children mDivert =
+    case mDivert of
+        Nothing ->
+            MList []
+
+        Just (Syntax.Nested list) ->
+            MList (List.map fromElement list)
+
+        Just (Syntax.Immediate list) ->
+            MList (List.map fromElement list)
+
+        Just (Syntax.Reference locString) ->
+            Literal (Loc.value locString)
+
+
+commandName : Syntax.Command -> String
+commandName ( mLocString, _ ) =
+    Maybe.map Loc.value mLocString |> Maybe.withDefault "(command)"
 
 
 fromMarkup : Syntax.Markup -> MExpression
