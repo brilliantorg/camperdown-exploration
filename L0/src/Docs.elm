@@ -23,13 +23,16 @@ Here is the rendered version:
 
 [indent  This is code: `a[i] = a[i] + 1`]
 
-The version of L0 that you see here is implemented in [link Elm https://elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library. Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
+The version of L0 that you see here is implemented in [link Elm https://
+elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library. Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
 
-[item [link "Campdown Demo" https://trusting-jang-9723b7.netlify.app/]]
+! bulleted >>
 
-[item [link "Hypercard Demo" https://focused-ardinghelli-051c12.netlify.app/]]
+    [item [link "Campdown Demo" https://trusting-jang-9723b7.netlify.app/]]
 
-[item [link "This L0 Demo" https://cocky-nightingale-a14dab.netlify.app/]]
+    [item [link "Hypercard Demo" https://focused-ardinghelli-051c12.netlify.app/]]
+
+    [item [link "This L0 Demo" https://cocky-nightingale-a14dab.netlify.app/]]
 
 
 [heading2 Additions]
