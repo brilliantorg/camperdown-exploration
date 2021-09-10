@@ -158,7 +158,7 @@ viewMarkdown model =
 
         Just doc ->
             column [ centerX, Background.color (Element.rgb 255 250 250), height (px 650), width (px 500), scrollbarY ]
-                [ column [ Font.size 14 f ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
+                [ column [ Font.size 14 ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
 
 
 viewCampDown : Model -> Element msg
