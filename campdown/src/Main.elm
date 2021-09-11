@@ -404,6 +404,7 @@ buttonStyle =
     [ Background.color (Element.rgb 0.5 0.5 0.5)
     , Font.color (rgb255 255 255 255)
     , Font.size 14
+    , mouseDown [ Background.color (rgb 0 0 1) ]
     , paddingXY 15 8
     ]
 

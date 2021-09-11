@@ -13,6 +13,7 @@ import Element.Font as Font
 import Element.Input as Input
 import File exposing (File)
 import File.Select as Select
+import Html.Attributes as HA
 import Markdown
 import Task
 import Url exposing (Url)
@@ -125,8 +126,16 @@ bgGray g =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "Campdown Demo"
-    , body = [ Element.layout [ bgGray 0.2 ] (mainColumn model) ]
+    { title = "Camperdown Explorations"
+    , body = [ Element.layoutWith { options = [ focusStyle noFocus ] } [ bgGray 0.2 ] (mainColumn model) ]
+    }
+
+
+noFocus : Element.FocusStyle
+noFocus =
+    { borderColor = Nothing
+    , backgroundColor = Nothing
+    , shadow = Nothing
     }
 
 
@@ -158,7 +167,7 @@ viewMarkdown model =
 
         Just doc ->
             column [ centerX, Background.color (Element.rgb 255 250 250), height (px 650), width (px 500), scrollbarY ]
-                [ column [ Font.size 14 ] [ Markdown.toHtml [] Docs.Pipeline.text |> Element.html ] ]
+                [ column [ Font.size 14, width (px 500) ] (Markdown.toHtml Nothing Docs.Pipeline.text |> List.map Element.html) ]
 
 
 viewCampDown : Model -> Element msg
@@ -297,6 +306,7 @@ buttonStyle =
     [ Background.color (Element.rgb 0.5 0.5 0.5)
     , Font.color (rgb255 255 255 255)
     , Font.size 14
+    , mouseDown [ Background.color (rgb 0 0 1) ]
     , paddingXY 15 0
     ]
 

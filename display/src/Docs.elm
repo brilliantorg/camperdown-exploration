@@ -34,7 +34,15 @@ Code for the parser and for the demo apps is open source:
 
     [Camperedown explorations](link "https://github.com/brilliantorg/backpacker-below")
     
-**Documentation:** The "Pipeline" button below gives some information on how the parser pipeline works.    
+Documentation:
+
+! list >>
+
+    [Fault Tolerant Parsing in L1](link "https://l1-lab.lamdera.app/g/jxxcarlson-fault-tolerant-parsing-in-l1-2021-07-27")
+
+    The "Pipeline" button below gives some information on how the parser pipeline works.
+
+
 
 This demo site is built with a stripped down version of the Campdown app.
 
