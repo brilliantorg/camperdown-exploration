@@ -225,23 +225,29 @@ This ordered sequence of goals forms a (call) stack structure:
   - Goal: Parse `dog [has]`, plus whatever is returned from above.
   - Goal: Parse `My`, plus whetever is returned from above.
 
-The current _raw text component_ being parsed is stored in the `text` field. This would contain `M` in the first example, `dog` in the second example, and `fl` in the third
+The current _raw text component_ being parsed is stored in the
+`text` field. This would contain `M` in the first example,
+`dog` in the second example, and `fl` in the third
 example.
 
-The current _trailing list of text segments_ is stored in the `parsed` field. This would
-be the empty list in the first and third examples, and `dog [has]` in the third example.
-That's really three components: the raw text `dog`, the annotation `[has]`, and the
-raw text segment that's the single space between annotations.
+The current _trailing list of text segments_ is stored in
+the `parsed` field. This would be the empty list in the first
+ and third examples, and `dog [has]` in the third example.
+That's really three components: the raw text `dog`, the
+annotation `[has]`, and the raw text segment that's the
+single space between annotations.
 
-Because functional programming lists, these are stored in the "wrong order":
+Because functional programming lists, these are stored
+in the "wrong order":
 
     [ Types.Raw " "
     , Annotation { startMark = "[", contents = [ Types.Raw "has" ], endMark = "]", command = Nothing }
     , Types.Raw "dog "
     ]
 
-So "cursor" is perhaps a misnomer: it's really a "selection," and the process of parsing feels like
-dragging that selection, line by line, across the whole passage. The reason "cursor" is a good name
+So "cursor" is perhaps a misnomer: it's really a "selection,"
+and the process of parsing feels like ragging that selection,
+line by line, across the whole passage. The reason "cursor" is a good name
 is that the goal of the parser's `styledTextLoop` is to always chomp at least
 SOME of the file that's immediately ahead of the "cursor", incorporating that new text into the
 cursor/selection/whatever.

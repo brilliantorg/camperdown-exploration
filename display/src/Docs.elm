@@ -33,7 +33,10 @@ Code for the parser and for the demo apps is open source:
     [Camperdown parser](link "https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest/")
 
     [Camperedown explorations](link "https://github.com/brilliantorg/backpacker-below")
+    
+**Documentation:** The "Pipeline" button below gives some information on how the parser pipeline works.    
 
 This demo site is built with a stripped down version of the Campdown app.
+
 
 """
