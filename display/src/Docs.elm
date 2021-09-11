@@ -5,7 +5,7 @@ sample =
     """
 
 
-This site provides some documentation for the Camperdown parser, an open source version of the parser used by
+This site provides some demos and  documentation for the Camperdown parser, an open source version of the parser used by
 [Brilliant.org](link "https://brilliant.org") in the toolchain it uses to build its course offerings in STEM fields.
 
 The Camperdown parser is distinguished by (a) _fault tolerance_ and (b) _configurability._  Fault tolerance is needed
