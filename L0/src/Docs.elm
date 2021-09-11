@@ -6,6 +6,7 @@ sourceText =
 
 
 
+
 [heading1 The L0 Markup Language (Draft)]
 
 [image [opt caption:The L0 Mascot] https://www.nhm.ac.uk/content/dam/nhmwww/discover/garden-birds/winter-birds-blue-tit-two-column.jpg.thumb.768.768.jpg]
@@ -23,8 +24,7 @@ Here is the rendered version:
 
 [indent  This is code: `a[i] = a[i] + 1`]
 
-The version of L0 that you see here is implemented in [link Elm https://
-elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library. Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
+The version of L0 that you see here is implemented in [link Elm https://elm-lang.org] using the [link Camperdown https://package.elm-lang.org/packages/brilliantorg/backpacker-below/latest] library. Camperdown is an open-source version of the fault-tolerant parser developed at [link Briliant.org https://brilliant.org] for the tools used by the authors of their courses in STEM fields.  Because Camperdown is a  [i configurable] parser, it can be used to build quite a variety of apps, e.g.,
 
 ! bulleted >>
 
@@ -191,6 +191,8 @@ The table of contents is constructed from the parsed document, viewed as a list 
 For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
 
 [image [opt caption: Camperdown Elm Tree] `https://upload.wikimedia.org/wikipedia/commons/2/20/Camperdown_Elm_Prospect_Park_Brooklyn.jpg`]
+
+
 
 
 
