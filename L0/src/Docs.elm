@@ -41,7 +41,7 @@ Let us discuss the additions made to pure L0
 
 [heading3 Block verbatim]
 
-With block verbatim you write can multi-line code or anything else that you wish to be rendered verbatim. A verbatim block consists of the string `%%%` followed by text which [i must] be indendented
+With block verbatim you can write multi-line code or anything else that you wish to be rendered as-is. A verbatim block consists of the string `%%%` followed by text which [i must] be indendented
 
 %%%
    %%%
@@ -191,7 +191,6 @@ The table of contents is constructed from the parsed document, viewed as a list 
 For those curious about the origin of the name [quote Camperdown parser], the clue is in the photograph below. Taken in Prospect Park, Brooklyn, its subject is a particular interesting species of Elm tree, [i Ulmus glabra 'Camperdownii'].  Courtesy of Wikimedia Foundation.
 
 [image [opt caption: Camperdown Elm Tree] `https://upload.wikimedia.org/wikipedia/commons/2/20/Camperdown_Elm_Prospect_Park_Brooklyn.jpg`]
-
 
 
 
